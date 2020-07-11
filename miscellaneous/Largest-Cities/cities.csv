@@ -1,0 +1,301 @@
+﻿Rank,City,Country,Population
+1,SEOUL,South Korea,10231000
+2,São Paulo,Brazil,10009000
+3,Bombay,India,9925000
+4,JAKARTA,Indonesia,9373000
+5,Karachi,Pakistan,9339000
+6,MOSKVA (Moscow),Russia,8297000
+7,Istanbul,Turkey,8260000
+8,MEXICO (Mexico City),Mexico,8235000
+9,Shanghai,China,8214000
+10,TOKYO,Japan,8130000
+11,New York (NY),USA,8008000
+12,BANGKOK,Thailand,7506700
+13,BEIJING,China,7362000
+14,Delhi,India,7206000
+15,LONDON,UK,7074000
+16,HongKong,China,6843000
+17,CAIRO,Egypt,6800000
+18,TEHRAN,Iran,6758000
+19,BOGOTA,Colombia,6422000
+20,Bandung,Indonesia,5919000
+21,Tianjin,China,5855000
+22,LIMA,Peru,5681000
+23,Rio de Janeiro,Brazil,5613000
+24,Lahore,Pakistan,5143000
+25,Bogor,Indonesia,5000000
+26,SANTIAGO,Chile,4788000
+27,St Petersburg,Russia,4678000
+28,Shenyang,China,4669000
+29,Calcutta,India,4399000
+30,Wuhan,China,4040000
+31,Sydney,Australia,4031000
+32,Guangzhou,China,3935000
+33,SINGAPORE,Singapore,3894000
+34,Madras,India,3841000
+35,BAGHDAD,Iraq,3841000
+36,Pusan,South Korea,3814000
+37,Los Angeles (CA),USA,3694000
+38,Yokohama,Japan,3426000
+39,DHAKA,Bangladesh,3397000
+40,BERLIN,Germany,3386000
+41,Alexandria,Egypt,3339000
+42,Bangalore,India,3302000
+43,Malang,Indonesia,3173000
+44,Hyderabad,India,3145000
+45,Chongqing,China,3127000
+46,Ho Chi Minh City,Vietnam,3015000
+47,Haerbin,China,2990000
+48,ANKARA,Turkey,2984000
+49,BUENOS AIRES,Argentina,2965000
+50,Chengdu,China,2954000
+51,Ahmedabad,India,2954000
+52,Casablanca,Morocco,2943000
+53,Chicago (IL),USA,2896000
+54,Xian,China,2872000
+55,MADRID,Spain,2823000
+56,Surabaya,Indonesia,2801000
+57,PYONGYANG,NorthKorea,2741000
+58,Nanjing,China,2678000
+59,KINSHASA,Congo (Zaire),2664000
+60,ROMA,Italy,2648000
+61,Taipei,China,2640000
+62,Osaka,Japan,2598000
+63,KIEV,Ukraine,2589000
+64,YANGON,Myanmar,2513000
+65,Toronto,Canada,2500000
+66,Zibo,China,2484000
+67,Dalian,China,2483000
+68,Taegu,South Korea,2449000
+69,ADDIS ABABA,Ethopia,2424000
+70,Jinan,China,2403000
+71,Salvador,Brazil,2331000
+72,Inchon,South Korea,2308000
+73,Semarang,Indonesia,2221000
+74,Giza,Egypt,2221000
+75,Changchun,China,2192000
+76,Havanna,Cuba,2192000
+77,Nagoya,Japan,2171000
+78,Belo Horizonte,Brazil,2154000
+79,PARIS,France,2152000
+80,TASHKENT,Uzbekistan,2142000
+81,Fortaleza,Brazil,2139000
+82,Sukabumi,Indonesia,2137000
+83,Cali,Colombia,2128000
+84,Guayaquil,Ecuador,2117000
+85,Qingdao,China,2101000
+86,Izmir,Turkey,2081000
+87,Cirebon,Indonesia,2080000
+88,Taiyuan,China,2051000
+89,BRASILIA,Brazil,2016000
+90,BUCURESTI,Romania,2016000
+91,Faisalabad,Pakistan,2008000
+92,Quezon City,Philippines,1989000
+93,Medan,Indonesia,1988000
+94,Houston (TX),USA,1953000
+95,Abidjan,Côte d’Ivorie,1929000
+96,Mashhad,Iran,1887000
+97,Medellín,Colombia,1885000
+98,Kanpur,India,1879000
+99,BUDAPEST,Hungary,1825000
+100,CARACAS,Venezuela,1823000
+101,Sapporo,Japan,1822000
+102,LUANDA,Angola,1822000
+103,RIYADH,Saudi Arabia,1800000
+104,Zhengzhou,China,1796000
+105,Zaozhuang,China,1793000
+106,BAKU,Azerbaijan,1792000
+107,Dongguan,China,1741000
+108,Hamburg,Germany,1704000
+109,MINSK,Belarus,1677000
+110,Guiyang,China,1664000
+111,Kediri,Indonesia,1663000
+112,MANILA,Philippines,1654000
+113,Tegal,Indonesia,1633000
+114,Nagpur,India,1624000
+115,Lucknow,India,1619000
+116,Curitiba,Brazil,1618000
+117,Lanzhou,China,1617000
+118,QUITO,Ecuador,1615000
+119,WARSZAWA (Warsaw),Poland,1615000
+120,Kunming,China,1611000
+121,Kampong Cham,Cambodia,1608000
+122,Brisbane,Australia,1598000
+123,BEOGRAD (Belgrade),Serbia,1594000
+124,Linyi,China,1590000
+125,Pune,India,1566000
+126,Barranquilla,Colombia,1549000
+127,WIEN (Vienna),Austria,1539000
+128,Tangshan,China,1517000
+129,Philadelphia (PA),USA,1517000
+130,ALGER (Algiers),Algeria,1507000
+131,Tianmen,China,1506000
+132,Surat,India,1505000
+133,TRIPOLI,Libya,1500000
+134,Xinghua,China,1497000
+135,Kharkov,Ukraine,1494000
+136,Kobe,Japan,1493000
+137,Hangzhou,China,1476000
+138,Kaohsiung.,China,1468000
+139,Kyoto,Japan,1467000
+140,Jaipur,India,1458000
+141,Barcelona,Spain,1454000
+142,Jeddah,Saudi Arabia,1450000
+143,Anshan,China,1442000
+144,Suizhou,China,1439000
+145,KABUL,Afghanistan,1424000
+146,Qiqihaer,China,1424000
+147,Palembang,Indonesia,1415000
+148,Taian,China,1412000
+149,Rawalpindi,Pakistan,1409000
+150,Fuzhou,China,1402000
+151,Novosibirsk,Russia,1400000
+152,Tengzhou,China,1399000
+153,Zhanjiang,China,1399000
+154,Dengzhou,China,1391000
+155,Shijiazhuang,China,1390000
+156,Fushun,China,1388000
+157,Pingxiang,China,1388000
+158,Recife,Brazil,1388000
+159,Guikong,China,1387000
+160,Changsha,China,1376000
+161,Xiantao,China,1371000
+162,Nanchang,China,1369000
+163,Yancheng,China,1366000
+164,Chittagong,Bangladesh,1363000
+165,Perth,Australia,1361000
+166,Dar es Salaam,Tanzania,1360000
+167,Nizhny Novgorod,Russia,1357000
+168,NAIROBI,Kenya,1346000
+169,Fukuoka,Japan,1341000
+170,Yulin,China,1323000
+171,Phoenix (AZ),USA,1321000
+172,Porto Alegre,Brazil,1321000
+173,Jilin,China,1320000
+174,Xintai,China,1306000
+175,Milano,Italy,1305000
+176,MONTEVIDEO,Uruguay,1303000
+177,Xiaogan,China,1302000
+178,Pingdu,China,1296000
+179,Chaozhou,China,1293000
+180,Neijiang,China,1289000
+181,Manaus,Brazil,1285000
+182,Datong,China,1277000
+183,Taejon,South Korea,1272000
+184,Omdurman,Sudan,1271000
+185,LUSAKA,Zambia,1269000
+186,TBILISI,Georgia,1268000
+187,Ekaterinoburg,Russia,1267000
+188,Esfahan,Iran,1266000
+189,Suining,China,1259000
+190,Kwangchu,South Korea,1257000
+191,Netzahualcóyotl,Mexico,1255000
+192,YEREVAN,Armenia,1249000
+193,Kawasaki,Japan,1249000
+194,Baotou,China,1248000
+195,Huainan,China,1239000
+196,Zhongshan,China,1237000
+197,Changde,China,1231000
+198,San Diego (CA),USA,1223000
+199,Haozhou,China,1222000
+200,Maracaibo,Venezuela,1220000
+201,RABAT,Morocco,1220000
+202,Wulumuqi,China,1217000
+203,Luoyang,China,1202000
+204,Belém,Brazil,1200000
+205,Multan,Pakistan,1197000
+206,München (Munich),Germany,1194000
+207,PRAHA (Prague),Czech Republic,1193000
+208,HARARE,Zimbabwe,1189000
+209,Dallas (TX),USA,1188000
+210,Probolinggo,Indonesia,1174000
+211,Magelang,Indonesia,1173000
+212,Hyderabad,Pakistan,1166000
+213,Samara,Russia,1164000
+214,Nanning,China,1163000
+215,Dongtai,China,1162000
+216,Córdoba,Argentina,1157000
+217,Heze,China,1154000
+218,Ujung Pandang,Indonesia,1153000
+219,Omsk,Russia,1153000
+220,Handan,China,1151000
+221,Weifang,China,1151000
+222,AMMAN,Jordan,1147000
+223,MANAGUA,Nicaragua,1147000
+224,KUALA LUMPUR,Malaysia,1145000
+225,San Antonio (TX),USA,1144000
+226,Ningbo,China,1142000
+227,SOFIA,Bulgaria,1138000
+228,Qidong,China,1136000
+229,Guarulhos,Brazil,1134000
+230,Huaian,China,1132000
+231,Gujranwala,Pakistan,1132000
+232,Xiaoshan,China,1130000
+233,Almaty,Kazakhstan,1129000
+234,Hiroshima,Japan,1126000
+235,La Matanza,Argentina,1120000
+236,Leiyang,China,1112000
+237,Hefei,China,1110000
+238,Jiangyin,China,1108000
+239,Dnepropetrovsk,Ukraine,1108000
+240,Laiwu,China,1105000
+241,Pikine-Guediawaye,Senegal,1096000
+242,Pakalongan,Indonesia,1093000
+243,Adelaide,Australia,1092000
+244,Indore,India,1091000
+245,Kazan,Russia,1091000
+246,Fengcheng,China,1090000
+247,Ufa,Russia,1087000
+248,Chelyabinsk,Russia,1084000
+249,Suqian,China,1076000
+250,Yixing,China,1074000
+251,HANOI,Vietnam,1073000
+252,Goiânia,Brazil,1073000
+253,Yuzhou,China,1072000
+254,Leshan,China,1070000
+255,Monterrey,Mexico,1069000
+256,Bursa,Turkey,1066000
+257,Macheng,China,1062000
+258,Bhopal,India,1062000
+259,Vadodara,India,1061000
+260,Lagos,Nigeria,1060000
+261,Shiraz,Iran,1053000
+262,Donetsk,Ukraine,1050000
+263,Ruian,China,1046000
+264,Napoli (Naples),Italy,1046000
+265,Jingmen,China,1042000
+266,Ludhiana,India,1042000
+267,Adana,Turkey,1041000
+268,Tianshui,China,1039000
+269,Changshu,China,1036000
+270,Haicheng,China,1036000
+271,Zhucheng,China,1030000
+272,Huzhou,China,1027000
+273,Rizhao,China,1027000
+274,Daqing,China,1025000
+275,Dingzhou,China,1024000
+276,Caloocan,Philippines,1023000
+277,Birmingham,UK,1020000
+278,Fulin,China,1018000
+279,Jimo,China,1018000
+280,Montréal,Canada,1016000
+281,MAPUTO,Mozambique,1015000
+282,Kalyan,India,1014000
+283,Perm,Russia,1014000
+284,Wuxi,China,1013000
+285,Kitakyushu,Japan,1011000
+286,Sendai,Japan,1008000
+287,Davao,Philippines,1008000
+288,Pueblade Zaragoza,Mexico,1007000
+289,Lianyuan,China,1006000
+290,GUATEMALA CITY,Guatemala,1006000
+291,Qinzhou,China,1005000
+292,Rostov-na-Donu (Rostov),Russia,1003000
+293,Odessa,Ukraine,1002000
+294,Wafangdian,China,1001000
+295,PHNOM PENH,Cambodia,999000
+296,Volgograd,Russia,992000
+297,PORT-AU-PRINCE,Haiti,990000
+298,Chifeng,China,987000
+299,Gongzhuling,China,987000
+300,Detroit (MI),USA,951000
