@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	fmt.Println("/// No Channels ready, but need to to domething ///")
+	fmt.Println("/// No Channels are ready, but need to perform work ///")
 	fmt.Println()
 
 	start := time.Now()
@@ -15,6 +15,6 @@ func main() {
 	case <-c1:
 	case <-c2:
 	default:
-		fmt.Printf("In default after %v\n\n", time.Since(start))
+		fmt.Printf("Matched `default` after %v\n\n", time.Since(start))
 	}
 }
