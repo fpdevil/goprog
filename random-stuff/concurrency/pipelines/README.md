@@ -48,3 +48,30 @@ Once run, it shows the below interesting details while creating `30000` goroutin
 	Memory: 2.377kb
 	Time: 110.299342ms
 ```
+
+## sync.Waitgroup
+
+Using `WaitGroup` is an excellent way to ensure that a set of concurrent operations complete when we do not care about the result of the concurrent operation or we have other means of collecting the results of running.
+
+In case if we do care about the results or we do not have any explicit way of capturing the results, it's better to use **channels** with a **select** statement.
+
+Here is a way of applying `WaitGroup` to the example we listed earlier.
+
+```
+var wg sync.WaitGroup
+
+func main() {
+    go blanket() {
+        // do something here
+    }
+    wg.Wait()
+}
+
+func blanket() {
+    wg.Add(1)
+    fmt.Print("a blanket function \n")
+    defer wg.Done()
+}
+```
+
+Essentially `WaitGroup` may be considered as a _Concurrency-Safe_ counter. All calls to the `Add()` would increment the counter by an integer passed in and all calls to `Done` would decrement the counter by `1`. Calls to the `Wait()` will block untill the counter is back to `0`.
