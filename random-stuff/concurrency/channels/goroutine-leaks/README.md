@@ -16,6 +16,7 @@ The following are some of the paths which leads to cleanup of `goroutines`.
 
 - When it's explicitly advised or instructed to stop working. (_aka cancellation of goroutine_)
 
+Here, the first `2` paths are available for free as a part of the language features and algorithm. The important one to consider is the 3rd path for explicit cancellation of the `goroutines` and a graceful termination of all it's dependent `goroutines`.
 
 ## Cancellation of goroutines
 
