@@ -44,7 +44,7 @@ func main() {
 
 	// random number generating function
 	rand := func() interface{} {
-		return rand.Intn(n) + 1
+		return rand.Intn(n)
 	}
 
 	// create the predicate channel to mark closing
