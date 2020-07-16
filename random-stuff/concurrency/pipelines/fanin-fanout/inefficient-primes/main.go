@@ -15,7 +15,6 @@ provided in  the inputStream by  every number below that  input stream
 number. If it is  unsuccessful, it will pass the value  on to the next
 stage.  The algorithm  is certainly  very crude  and very  inefficient
 taking a long time.
-
 We will close the pipeline after m = 10 primes are found
 */
 
@@ -39,7 +38,7 @@ func main() {
 
 	// random number generating function
 	rand := func() interface{} {
-		return rand.Intn(n) + 1
+		return rand.Intn(n)
 	}
 
 	// create the predicate channel to mark closing

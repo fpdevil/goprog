@@ -10,63 +10,60 @@ import (
 	"time"
 )
 
-// verbose for progress
-var verbose = flag.Bool("v", false, "display verbose progress messages")
+const (
+	msg = `
+	Concurrent Directory Traversal
+	Report disk usage of the specified directories from command line
+	much similar to how posix based du command works
+	****************************************************************
+	`
+)
 
-var done = make(chan struct{})
+var (
+	// to display verbose for progress
+	verbose = flag.Bool("v", false, "display verbose progress messages")
+
+	// number of files and number of bytes of each
+	nfiles, nbytes int64
+
+	// introducing concurrency
+	wg sync.WaitGroup
+)
 
 func main() {
-	fmt.Println("---- Directory Usage ----")
-	fmt.Println()
+	fmt.Println(msg)
 
+	// handle the command line arguments to take initial directories
 	flag.Parse()
 	roots := flag.Args()
+	// in case if the input arguments are `0` we take the current directory
 	if len(roots) == 0 {
 		roots = []string{"."}
 	}
 
-	// for cancellation
-	go func() {
-		os.Stdin.Read(make([]byte, 1)) // read a single byte
-		close(done)
-	}()
-
+	// now traverse through the file tree and receive over the channel
 	fileSizes := make(chan int64)
-	// handle concurrency
-	var wg sync.WaitGroup
+
 	for _, root := range roots {
 		wg.Add(1)
 		go walkDir(root, &wg, fileSizes)
 	}
 
-	go func() {
-		wg.Wait()
-		close(fileSizes)
-	}()
+	wg.Wait()
 
-	// handling the periodic result printing time.tick
-	// create a receive only channel
+	defer close(fileSizes)
+
+	// --- for reading from the channel and getting the file info
+	// get progress of the program statistics occassionally in verbose mode
 	var tick <-chan time.Time
 	if *verbose {
 		tick = time.Tick(500 * time.Millisecond)
 	}
 
-	// print the results
-	var nfiles, nbytes int64
-	// for size := range fileSizes {
-	// 	nfiles++
-	// 	nbytes += size
-	// }
-
+	// now read from te channel and print the results
 loop:
 	for {
 		select {
-		case <-done:
-			// Drain fileSizes to allow existing goroutines to finish.
-			for range fileSizes {
-				// Do nothing.
-			}
-			return
 		case size, ok := <-fileSizes:
 			if !ok {
 				break loop
@@ -74,24 +71,36 @@ loop:
 			nfiles++
 			nbytes += size
 		case <-tick:
-			printDiskUsage(nfiles, nbytes)
+			showDiskUsage(nfiles, nbytes)
 		}
 	}
 
-	// fmt.Printf("current active goroutines: %d\n", runtime.NumGoroutine())
+	// finally show the totals...
+	showDiskUsage(nfiles, nbytes)
 
-	printDiskUsage(nfiles, nbytes)
+	// for size := range fileSizes {
+	// 	nfiles++
+	// 	nbytes += size
+	// }
+	// showDiskUsage(nfiles, nbytes)
 }
 
-func printDiskUsage(nfiles, nbytes int64) {
-	fmt.Printf("%d files %.1f GB\n", nfiles, float64(nbytes)/1e9)
+// dirEntry function returns all the os level file/dir statistics and entries
+// of the supplied directory dir sorted by filename.
+func dirEntry(dir string) []os.FileInfo {
+	entries, err := ioutil.ReadDir(dir)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "du: %#v\n", err)
+		return nil
+	}
+	return entries
 }
 
-// walkDir recursively walks the file tree rooted at dir
-// and sends the size of each found file on fileSizes.
+// walkDir function wlks through the file tree rooted at the dir recursively
+// and sends the size of each file found to fileSizes channel.
 func walkDir(dir string, wg *sync.WaitGroup, fileSizes chan<- int64) {
 	defer wg.Done()
-	for _, entry := range dirents(dir) {
+	for _, entry := range dirEntry(dir) {
 		if entry.IsDir() {
 			wg.Add(1)
 			subdir := filepath.Join(dir, entry.Name())
@@ -102,31 +111,7 @@ func walkDir(dir string, wg *sync.WaitGroup, fileSizes chan<- int64) {
 	}
 }
 
-// sema is a counting semaphore for limiting concurrency in dirents.
-var sema = make(chan struct{}, 20)
-
-// dirents returns the entries of directory dir.
-func dirents(dir string) []os.FileInfo {
-	select {
-	case sema <- struct{}{}: // acquire token
-	case <-done:
-		return nil
-	}
-	defer func() { <-sema }() //release token
-
-	entries, err := ioutil.ReadDir(dir)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "du: %v\n", err)
-		return nil
-	}
-	return entries
-}
-
-func cancelled() bool {
-	select {
-	case <-done:
-		return true
-	default:
-		return false
-	}
+func showDiskUsage(nfiles, nbytes int64) {
+	gb := float64(nbytes) / 1e9
+	fmt.Printf("* %d files %.2f GB\n", nfiles, gb)
 }

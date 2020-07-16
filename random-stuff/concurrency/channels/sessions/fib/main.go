@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	fmt.Println("== naive fibonacci of 45 th number ==")
+	fmt.Println("== naive fibonacci of 45th number ==")
 	go spinner(100 * time.Millisecond)
 	const n = 45
 	fibn := fib(n)
