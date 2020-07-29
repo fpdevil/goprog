@@ -12,6 +12,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"text/tabwriter"
 )
 
 // store the result of the words count into a map
@@ -65,7 +66,8 @@ func main() {
 		return
 	}
 
-	printResults(results)
+	// printResults(results)
+	showResults(results)
 }
 
 func wordProcess(words []string) map[string]int {
@@ -82,4 +84,15 @@ func printResults(result map[string]int) {
 	for w, c := range result {
 		fmt.Printf("%-10v%s\n", c, w)
 	}
+}
+
+func showResults(result map[string]int) {
+	const format = "%v\t%v\n"
+	tw := new(tabwriter.Writer).Init(os.Stdout, 0, 0, 2, ' ', 0)
+	fmt.Fprintf(tw, format, "Count", "Word")
+	fmt.Fprintf(tw, format, "-----", "----")
+	for w, c := range result {
+		fmt.Fprintf(tw, format, c, w)
+	}
+	tw.Flush()
 }
