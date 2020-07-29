@@ -5,12 +5,18 @@ import (
 	"time"
 )
 
+const (
+	n = 45 // 45 th fibonacci number
+)
+
 func main() {
 	fmt.Println("== naive fibonacci of 45th number ==")
+	start := time.Now()
+	// sping with a sleep timer of 100 milliseconds
 	go spinner(100 * time.Millisecond)
-	const n = 45
 	fibn := fib(n)
 	fmt.Printf("\rFibonacci(%d) = %d\n", n, fibn)
+	fmt.Printf("total time taken: %v\n", time.Since(start))
 }
 
 func fib(n int) int {
