@@ -1,0 +1,13 @@
+cats
+dogs
+rats
+mice
+dogs
+pigeons
+cats
+squirrels
+puppies
+cats
+crows
+sparrows
+pigeons
