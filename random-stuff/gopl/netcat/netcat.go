@@ -14,9 +14,19 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}
-	defer conn.Close()
-	go mustCopy(os.Stdout, conn)
+	done := make(chan struct{})
+	go func() {
+		io.Copy(os.Stdout, conn) // ignore errors
+		fmt.Printf("finished\n")
+		done <- struct{}{}
+	}()
 	mustCopy(conn, os.Stdin)
+	conn.Close()
+	<-done
+
+	// defer conn.Close()
+	// go mustCopy(os.Stdout, conn)
+	// mustCopy(conn, os.Stdin)
 }
 
 func mustCopy(dst io.Writer, src io.Reader) {
