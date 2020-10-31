@@ -88,7 +88,7 @@ func main() {
 	if !os.IsNotExist(err) {
 		fmt.Println(">>> cleaning up the log file")
 		fmt.Println()
-		os.Remove(*logFile)
+		_ = os.Remove(*logFile)
 	}
 
 	// open the CSV file for parsing
@@ -151,7 +151,7 @@ func parseCSV(bankTxns io.Reader, logFile string) []transaction {
 					txn.category, err = mapBudgetToCategory(val)
 					if err != nil {
 						s := strings.Join(record, ", ")
-						errorLog("error parsing csv catgeory column - ", err, s, logFile)
+						_ = errorLog("error parsing csv catgeory column - ", err, s, logFile)
 					}
 				}
 			}
