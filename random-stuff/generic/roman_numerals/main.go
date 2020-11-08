@@ -15,6 +15,8 @@ const (
 
 type memoizeFunction func(int, ...int) interface{}
 
+// RomanForDecimal is a variable that holds a value of type
+// memoizeFunction for data caching
 var RomanForDecimal memoizeFunction
 
 func init() {
@@ -45,10 +47,12 @@ func main() {
 		90, 99, 100, 200, 300, 400, 500, 600, 666, 700, 800, 900,
 		1000, 1009, 1444, 1666, 1945, 1997, 1999, 2000, 2008, 2010,
 		2012, 2500, 3000, 3999} {
-		fmt.Printf("%4d = %s\n", x, RomanForDecimal(x).(string))
+		fmt.Printf("%4d ==> %s\n", x, RomanForDecimal(x).(string))
 	}
 }
 
+// Memoize function serves as a tool for memoizing the frequent
+// calculations and storing them as a cache
 func Memoize(function memoizeFunction) memoizeFunction {
 	cache := make(map[string]interface{})
 	return func(x int, xs ...int) interface{} {
