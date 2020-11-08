@@ -120,14 +120,12 @@ func printElements(slice []string) {
 	tw.Flush()
 }
 
-/*
- * SortIndentedStrings function  takes a string slice  with items at
- * different levels of indent that are used to indicate parent-child
- * relationships, sort the items case insensitively with child items
- * sorted underneath their  parent items and so  on recursively. The
- * indentation must  be either one or  more spaces or may  be one or
- * more tabs.
- */
+// SortIndentedStrings function  takes a string slice  with items at
+// different levels of indent that are used to indicate parent-child
+// relationships, sort the items case insensitively with child items
+// sorted underneath their  parent items and so  on recursively. The
+// indentation must  be either one or  more spaces or may  be one or
+// more tabs.
 func SortIndentedStrings(slice []string) []string {
 	entries := fillEntries(slice)
 	return sortedEntries(entries)
@@ -167,6 +165,7 @@ func fillIndentedStrings(entry Entry, indentedSlice *[]string) {
 
 func getIndent(slice []string) (string, int) {
 	for _, item := range slice {
+		// check if the first element is a space ir a tab
 		if len(item) > 0 && (item[0] == ' ' || item[0] == '\t') {
 			whitespace := rune(item[0])
 			for i, char := range item[1:] {

@@ -1,5 +1,3 @@
-package main
-
 /*
 People Database Stats (github.com/striversity/glft/)
 Public Sanple Data available at https://www.mockaroo.com/
@@ -28,6 +26,8 @@ program argument to the program.
 (d) average salary
 
 */
+
+package main
 
 import (
 	"fmt"

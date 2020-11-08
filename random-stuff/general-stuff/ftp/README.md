@@ -2,7 +2,7 @@
 
 ## Server
 
-Start the `FTP` server ##as below
+Start the `FTP` server as below
 
 ```shell
 $ go run server/FTPServer.go

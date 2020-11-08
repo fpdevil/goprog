@@ -1,3 +1,12 @@
+// Demo of pipelines using 3 goroutines and 2 channels
+// 3 goroutines are
+// - counter
+// - squarer
+// - printer
+// 2 channels are
+//		-- naturals and
+//		-- squares
+// -----------------------------------------------------
 package main
 
 import "fmt"

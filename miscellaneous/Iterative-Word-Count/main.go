@@ -1,11 +1,11 @@
-package main
-
 /*
 Write a function  to count the frequency of words  in a string of
 text and  return a map of  words with their counts.  The function
 should convert the  text to lowercase, and  punctuation should be
 trimmed from words.
 */
+
+package main
 
 import (
 	"fmt"

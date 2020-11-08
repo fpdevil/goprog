@@ -1,3 +1,11 @@
+// TCP based clock server to fetch and display time periodically
+// go run main.go
+// client side...
+// nc localhost 9000
+//		09:38:21 -0600
+//		09:38:22 -0600
+//		09:38:23 -0600
+//
 package main
 
 import (

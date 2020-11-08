@@ -1,4 +1,6 @@
 // Parse and change date time of apache web server logs
+// Essentially, the format of a string containng both a date
+// and a time will be changed
 package main
 
 import (

@@ -33,7 +33,7 @@ const (
 	MovieAPI = `https://omdbapi.com/?apikey=%s&t=%v`
 	// usage details string
 	usage = `
-	go run main.go <apikey> <moviename>
+	go run poster.go <apikey> <moviename>
 	`
 )
 

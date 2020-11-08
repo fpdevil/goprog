@@ -31,6 +31,7 @@ func main() {
 
 	dirstats := make(chan *DirInfo)
 
+	// traverse through the directories
 	for i, root := range roots {
 		wg.Add(1)
 		go walkDir(root, i, &wg, dirstats)
@@ -44,6 +45,8 @@ func main() {
 	if *verbose {
 		tick = time.Tick(500 * time.Millisecond)
 	}
+
+	// track number of files and number of bytes
 	nfiles := make([]int64, len(roots))
 	nbytes := make([]int64, len(roots))
 
