@@ -43,6 +43,7 @@ func main() {
 	})
 	logger.Info("starting Word Frequency service...")
 
+	// create a map containing each word from the file and their count
 	frequencyPerWord := map[string]int{}
 	for _, filename := range parseCmdLine(args[1:]) {
 		updateFrequencies(filename, frequencyPerWord)
@@ -54,12 +55,15 @@ func main() {
 }
 
 // parseCmdLine function predominantly handles the pattern match file globbing
-// for windows platforms as the same is natural for POSIX systems
+// for windows platforms as the same is natural and default for POSIX systems
+// The filepath.Glob returns the names of all files matching pattern or nil if
+// there is no matching file.
+// an example pattern to look for may be /usr/*/bin/sys
 func parseCmdLine(files []string) []string {
 	logger := log.WithFields(log.Fields{
 		"parseCmdLine": "word-frequencies",
 	})
-	// to handle file globbing on Windows platform
+	// check and handle file globbing on Windows platform
 	if runtime.GOOS == "windows" {
 		args := make([]string, 0, len(files))
 		for _, name := range files {
@@ -76,7 +80,7 @@ func parseCmdLine(files []string) []string {
 }
 
 // updateFrequencies function opens each supplied file and hands it over
-//  to another function for the actual work/processing
+// to another function for the actual work/processing
 func updateFrequencies(filename string, frequencyPerWord map[string]int) {
 	logger := log.WithFields(log.Fields{
 		"updateFrequencies": "word-frequencies",
@@ -108,6 +112,7 @@ func readAndUpdateFrequencies(r *bufio.Reader, fw map[string]int) {
 		// discard any non word characters
 		for _, word := range SplitOnNonLetters(strings.TrimSpace(line)) {
 			// only include words which contain atleast 2 letters
+			// const utf8.UTFMax = 4
 			if len(word) > utf8.UTFMax || utf8.RuneCountInString(word) > 1 {
 				fw[strings.ToLower(word)]++
 			}
