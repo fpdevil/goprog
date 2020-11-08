@@ -1,6 +1,6 @@
 # Exercise 8.1 Chapter 8
 
-Modify `clock2` to accept a `port number`, abd write a program, `clockwall`, that acts as a client of several clock servers at once, reading the times from each one and displaying the results in a table, akin to the wall of clocks seen in some business offices. If you have access to geographically distributed computers, run instances remotely; otherwise run local instances on different ports with fake time zones.
+Modify `clock2` to accept a `port number`, and write a program, `clockwall`, that acts as a client of several clock servers at once, reading the times from each one and displaying the results in a table, akin to the wall of clocks seen in some business offices. If you have access to geographically distributed computers, run instances remotely; otherwise run local instances on different ports with fake time zones.
 
 ```shell
 $ TZ=US/Eastern ./clock2 -port 8010 &
@@ -33,7 +33,7 @@ $ clockwall NewYork=localhost:8010 London=localhost:8020 Tokyo=localhost:8030
 
 ```shell
 # build the client
-⇒  go build -o clockwal
+⇒  go build -o clockwall
 
 # running the client
 ⇒  ./clockwall Hyderabad,India=localhost:8010 Zurich,Switzerland=localhost:8020 Chicago,US=localhost:8030
