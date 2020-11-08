@@ -1,3 +1,5 @@
+// program to mimic the behaviour of unix du command
+// to print the disk usage of files in a directory
 package main
 
 import (
@@ -30,6 +32,7 @@ func main() {
 		close(done)
 	}()
 
+	// traverse through the file tree.
 	fileSizes := make(chan int64)
 	for _, root := range roots {
 		wg.Add(1)
@@ -57,11 +60,11 @@ loop:
 		case <-done:
 			// Drain fileSizes to allow existing goroutines to finish.
 			for range fileSizes {
-				// perform nothing to drain
+				// perform nothing, just drain the fileSizes
 			}
 		case size, ok := <-fileSizes:
 			if !ok {
-				break loop
+				break loop // the fileSizes is closed, break out of loop
 			}
 			nfiles++
 			nbytes += size
@@ -84,7 +87,7 @@ var sem = make(chan struct{}, 20)
 // dirents function returns the entries of a directory dir
 func dirents(dir string) []os.FileInfo {
 	select {
-	case sem <- struct{}{}: // acquiring token
+	case sem <- struct{}{}: // acquiring the token
 	case <-done:
 		return nil // cancelled
 	}
