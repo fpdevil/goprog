@@ -1,5 +1,3 @@
-package main
-
 /*
 Data from http://www.citymayors.com/features/largest_cities_3.html
 
@@ -27,6 +25,8 @@ Requirements:
 
 	running: `go run . cities.csv`
 */
+
+package main
 
 import (
 	"fmt"
