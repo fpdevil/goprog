@@ -1,5 +1,3 @@
-package main
-
 /*
 Count the occurrence of each word in a text file
 
@@ -12,6 +10,8 @@ Count the occurrence of each word in a text file
 
 	go run main.go data.txt sherlock-holmes.txt
 */
+
+package main
 
 import (
 	"bufio"
