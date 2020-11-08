@@ -60,7 +60,7 @@ func handleConn(conn net.Conn) {
 
 	input := bufio.NewScanner(conn)
 	for input.Scan() {
-		messages <- who + ": " + input.Text()
+		messages <- "Message from " + who + ": " + input.Text()
 	}
 
 	leaving <- client{xclient: ch, name: who}
