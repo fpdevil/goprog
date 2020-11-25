@@ -125,9 +125,8 @@ func wordProcess(input string, resmap map[string]int) {
 	// words := strings.Split(input, " ")
 
 	line := strings.ToLower(input)
-	words := strings.Fields(line)
+	words := strings.Fields(re.ReplaceAllString(line, " "))
 	for _, w := range words {
-		w = re.ReplaceAllString(w, "")
 		// synchronize the map access so that concurrent update
 		// of map is prevented
 		resultsMutex.Lock()
