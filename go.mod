@@ -3,8 +3,10 @@ module github.com/fpdevil/goprog
 go 1.14
 
 require (
+	github.com/fatih/color v1.10.0
 	github.com/gogo/protobuf v1.3.1
 	github.com/inancgumus/screen v0.0.0-20190314163918-06e984b86ed3
+	github.com/nsf/gocode v0.0.0-20190302080247-5bee97b48836 // indirect
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/sirupsen/logrus v1.6.0
 	github.com/stretchr/objx v0.3.0 // indirect

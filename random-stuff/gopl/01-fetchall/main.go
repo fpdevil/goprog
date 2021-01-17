@@ -19,10 +19,10 @@ func main() {
 	}
 
 	for range os.Args[1:] {
-		fmt.Printf("%v\n", <-ch)
+		fmt.Printf("* %v\n", <-ch)
 	}
 
-	fmt.Printf("Total time elapsed: %.2fs\n", time.Since(start).Seconds())
+	fmt.Printf("total time elapsed: %.2fs\n", time.Since(start).Seconds())
 }
 
 func fetch(url string, ch chan<- string) {
@@ -40,5 +40,5 @@ func fetch(url string, ch chan<- string) {
 		return
 	}
 	elapsed := time.Since(start).Seconds()
-	ch <- fmt.Sprintf("%.2fs %7d %s", elapsed, nbytes, url)
+	ch <- fmt.Sprintf("%.3fs %7d * %s", elapsed, nbytes, url)
 }

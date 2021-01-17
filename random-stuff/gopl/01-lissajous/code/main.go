@@ -25,16 +25,16 @@ import (
 	"net/http"
 	"os"
 	"time"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // create a palette for colors
-var palette = []color.Color{color.White, color.Black}
+// var palette = []color.Color{color.White, color.Black}
+var palette = []color.Color{color.White, color.RGBA{0, 255, 0, 255}}
 
 const (
-	whiteIndex = 0 // this is the first color in palette
-	blackIndex = 1 // this is the next color in palette
+	whiteIndex  = 0 // this is the first color in palette
+	greenIndex  = 1 // this is the next color in pa;ette
+	_blackIndex = 1 // this is the next color in palette
 )
 
 func main() {
@@ -49,9 +49,12 @@ func main() {
 		handler := func(w http.ResponseWriter, r *http.Request) {
 			lissajous(w)
 		}
+
 		http.HandleFunc("/", handler)
-		log.Fatal(http.ListenAndServe("localhost:8000", nil))
-		return
+		if err := http.ListenAndServe("localhost:8000", nil); err != nil {
+			fmt.Fprintf(os.Stderr, "error starting server")
+			return
+		}
 	}
 
 	lissajous(os.Stdout)
@@ -63,26 +66,26 @@ func lissajous(out io.Writer) {
 		size    = 100   // image canvas coverage size [-size .. +size]
 		cycles  = 5     // number of complete x oscillator revolutions
 		nframes = 64    // number of animated frames
-		delay   = 8     // delay which maps to 10ms between frames
+		delay   = 8     // delay which maps to 80ms between frames
 	)
 
 	// rellative frequency of the y oscillator
 	freq := rand.Float64() * 3.0
 	anim := gif.GIF{LoopCount: nframes}
-	phase := 0.0
+	phase := 0.0 // provide a startup phase difference
 
 	// the outer loop runs for 64 iterations each producing a single
 	// frame of animation; creates a 201 X 201 image with 2 color palette
 	for i := 0; i < nframes; i++ {
-		rect := image.Rect(0, 0, 2*size+1, 2*size+1)
-		img := image.NewPaletted(rect, palette)
+		rect := image.Rect(0, 0, 2*size+1, 2*size+1) // return a rectangle (0, 0) to (2x+1, 2y+1)
+		img := image.NewPaletted(rect, palette)      // get new Paletted image
 		// inner loop runs 2 Oscillators, X oscillator as just a Sine function
 		// and Y oscillator a Sine with frequency relative to X oscillator as a
 		// random number between 0 and 3, phase relative to X oscillator
 		for t := 0.0; t < cycles*2*math.Pi; t += res {
 			x := math.Sin(t)
 			y := math.Sin(t*freq + phase)
-			img.SetColorIndex(size+int(x*size+0.5), size+int(y*size+0.5), blackIndex)
+			img.SetColorIndex(size+int(x*size+0.5), size+int(y*size+0.5), greenIndex)
 		}
 		phase += 0.1
 		anim.Delay = append(anim.Delay, delay)
