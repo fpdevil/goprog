@@ -6,7 +6,7 @@ A series of random stuff which I am playing with `golang` as a part of my contin
 
 Selective exercises from the excellent book `The Go Programming Language`
 
-[GOPL Exercises](https://github.com/fpdevil/goprog/blob/branch/random-stuff/gopl)
+[GOPL Exercises](https://github.com/fpdevil/goprog/blob/master/random-stuff/gopl)
 
 ## Other samples and exercises
 
