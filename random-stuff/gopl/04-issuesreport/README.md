@@ -1,6 +1,10 @@
 # Chapter 4. Section 4.6 Text And HTML Templates
 
-Here the book describes about basics of html templates and walks through an example related to gthub issue reportin htnl format.
+Here the book describes about basics of templates and walks through an example related to gthub issue report in `textual template` format.
+
+## Running
+
+Here is the sample output from running the code
 
 ```bash
 go run main.go repo:golang/go is:open json decoder

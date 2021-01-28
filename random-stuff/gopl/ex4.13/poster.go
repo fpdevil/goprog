@@ -15,7 +15,9 @@ import (
 )
 
 /*
-http://www.omdbapi.com/?apikey=1a678916&t=interstellar
+An example invocation of the movie search API using the api key
+from omdb is as below:
+http://www.omdbapi.com/?apikey=1a678916&t=guns+of+navarone
 */
 
 // Movie struct contains selected items of interest from the omdbapi movie
@@ -25,28 +27,40 @@ type Movie struct {
 	Year     string
 	Poster   string
 	Response string
+	Actors   string
+	Plot     string
 	Error    string
 }
 
 const (
-	// MovieAPI points to the base url of omdbapi
+	// MovieAPI points to the base url of omdbapi with place
+	// holders for query parametes apikey and movie title
 	MovieAPI = `https://omdbapi.com/?apikey=%s&t=%v`
-	// usage details string
+	// a short program usage instruction string
 	usage = `
-	go run poster.go <apikey> <moviename>
+	usage: go run %s <apiKey> <movie title string>
+
 	`
 )
 
-// findMovie function finds the specified movie title in the omdbapi website
-// and returns the movie details, else an error message with appropriate details
-// the service is protecetd with an apikey, which needs to be passed as an argument
+// movieURL function returns a qualified url with proper query parameters
+// for getting the movie from omdb remote url
+func movieURL(apikey, query string) string {
+	return fmt.Sprintf(MovieAPI, apikey, query)
+}
+
+// findMovie  function searches  for  the specified  movie  title in  the
+// omdbapi website  using the  registered api key  and returns  the movie
+// details. On failure, an error message with appropriate details will be
+// returned. The api/service is proteceted with an apikey, which needs to
+// be passed as an argument
 func findMovie(apikey string, title []string) (movie Movie, err error) {
 	q := url.QueryEscape(strings.Join(title, " "))
-	url := fmt.Sprintf(MovieAPI, apikey, q)
-	log.Infof("calling movie db @ %v", url)
+	url := movieURL(apikey, q)
+	log.Infof("initiating movie title query from omdb db @ %v", url)
 	res, err := http.Get(url)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error calling %s: %v", url, err)
+		fmt.Fprintf(os.Stderr, "error fetching data from %s: %v", url, err.Error())
 		return
 	}
 
@@ -59,7 +73,7 @@ func findMovie(apikey string, title []string) (movie Movie, err error) {
 
 	decoder := json.NewDecoder(res.Body)
 	if err = decoder.Decode(&movie); err != nil {
-		log.Errorf("error decoding movie data: %v", err)
+		log.Errorf("error decoding movie data: %v", err.Error())
 		return
 	}
 	return
@@ -109,7 +123,7 @@ func (m Movie) writePoster() (err error) {
 func main() {
 	args := os.Args[1:]
 	if len(args) != 2 {
-		log.Errorf("Usage: %s", usage)
+		fmt.Fprintf(os.Stderr, usage, filepath.Base(os.Args[0]))
 		return
 	}
 
@@ -122,6 +136,7 @@ func main() {
 		return
 	}
 
+	log.Infof("movie information retrieved: %#v\n", movie)
 	if (Movie{} == movie) {
 		log.Errorf("No results for '%s'", title)
 		return

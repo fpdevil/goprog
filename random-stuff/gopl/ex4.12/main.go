@@ -1,12 +1,12 @@
 package main
 
 import (
-	"encoding/json"
+	"flag"
 	"fmt"
-	"net/http"
-	"os"
-	"strconv"
+	"regexp"
+	"strings"
 
+	"github.com/fpdevil/goprog/random-stuff/gopl/ex4.12/xkcd"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -14,68 +14,64 @@ const (
 	usage = `
 		xkcd get id
 	`
-	xkcdurl = `https://xkcd.com/%d/info.0.json`
+	indexDB = "index.json"
 )
 
-// Comic struct represents the json mapping for go struct
-type Comic struct {
-	Num        int
-	Year       string
-	Month      string
-	Day        string
-	Link       string
-	News       string
-	SafeTitle  string
-	Transcript string
-	Alt        string
-	Img        string
-	Title      string
-}
-
-// fetchComic function fetches the comic matching specified
-// id in the argument from xkcd url
-func fetchComic(id int) (*Comic, error) {
-	var comic Comic
-	url := fmt.Sprintf(xkcdurl, id)
-	log.Infof("calling url %v", url)
-
-	res, err := http.Get(url)
-	if err != nil {
-		log.Errorf("error (%v) calling %s", err, url)
-		return &comic, err
-	}
-
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusOK {
-		return &comic, fmt.Errorf("unable to fetch comic %d status: %s", id, res.StatusCode)
-	}
-	decoder := json.NewDecoder(res.Body)
-	if err = decoder.Decode(&comic); err != nil {
-		log.Errorf("%v decoding json data", err)
-		return &comic, err
-	}
-
-	return &comic, nil
-}
-
-// ParseDate function returns a string representation of the comic date
-func (c *Comic) ParseDate() string {
-	return fmt.Sprintf("%s-%s-%s", c.Day, c.Month, c.Day)
-}
+var (
+	from = flag.Int("from", 0, "starting id to build the index from.")
+	to   = flag.Int("to", 1, "ending index to build the index till.")
+	term = flag.String("keyword", "", "search term or keyword for transcript and title")
+)
 
 func main() {
-	args := os.Args
-	if len(args) < 2 {
-		fmt.Fprintf(os.Stdout, "please provide a valid input data")
-		return
+	log.SetLevel(log.InfoLevel)
+	flag.Parse()
+	index := xkcd.New(indexDB)
+
+	if *from != 0 && *to != 0 {
+		log.WithFields(log.Fields{
+			"program":    "main.go",
+			"index from": from,
+			"index to":   to,
+		}).Info("building index between the interval.")
+		index.Build(*from, *to)
+		index.Save()
 	}
 
-	cmd := args[1]
-	n, _ := strconv.Atoi(cmd)
-	comic, err := fetchComic(n)
-	if err != nil {
-		log.Errorf("%v", err)
-		return
+	if *term != "" {
+		comics := index.Search(*term)
+		re := regexp.MustCompile(`\[([^\[\]]*)\]`)
+		for _, comic := range comics {
+			fmt.Printf("%s\n", strings.Repeat("-", 75))
+			fmt.Printf("Found Comic ID: %15v\n", comic.Num)
+			fmt.Printf("URL: %15v\n", comic.Img)
+
+			if comic.Transcript != "" {
+				if re.MatchString(comic.Transcript) {
+					fmt.Print("Transcript:\n")
+					submatchall := re.FindAllString(comic.Transcript, -1)
+					for _, element := range submatchall {
+						element = strings.Trim(element, "[")
+						element = strings.Trim(element, "]")
+						fmt.Println(element)
+					}
+				} else {
+					fmt.Printf("Transcript: %15v\n", comic.Transcript)
+				}
+			} else {
+				if re.MatchString(comic.Alt) {
+					fmt.Print("Alt:\n")
+					submatchall := re.FindAllString(comic.Transcript, -1)
+					for _, element := range submatchall {
+						element = strings.Trim(element, "[")
+						element = strings.Trim(element, "]")
+						fmt.Println(element)
+					}
+				} else {
+					fmt.Printf("Alt: %15v\n", comic.Alt)
+				}
+			}
+			fmt.Printf("%s\n", strings.Repeat("-", 75))
+		}
 	}
-	fmt.Printf("%v\n", comic)
 }

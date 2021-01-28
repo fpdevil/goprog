@@ -8,7 +8,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-// StringReader is type containing a string whihc should
+// StringReader is type containing a string which should
 // satisfy the Read method from io.Reader
 type StringReader struct {
 	str string
@@ -31,7 +31,18 @@ func NewReader(s string) io.Reader {
 }
 
 func main() {
-	shtml := "<html><body><h1><p>Testing</p></h1></body></html>"
+	shtml := `<!DOCTYPE html>
+<html>
+	<head>
+		<title>A test page</title>
+	</head>
+<body>
+	<h1>
+		<p>Testing</p>
+	</h1>
+</body>
+</html>
+	`
 	doc, err := html.Parse(NewReader(shtml))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v", err)

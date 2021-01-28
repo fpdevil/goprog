@@ -30,12 +30,39 @@ Implement the `countWordsAndImages` function.
 
 ## Usage
 
+### Testing with multiple url's at once
 ```bash
-⇒  go run main.go http://gopl.io
-words: 198
-images: 4
+⇒  go run main.go https://golang.org http://gopl.io https://httpbin.org http://a.b.c.d
+------------------------------------------------
+[url: https://httpbin.org]
+------------------------------------------------
+# words   : 45
+# images  : 0
+------------------------------------------------
+[url: http://a.b.c.d]
+------------------------------------------------
+# error   : http GET error http://a.b.c.d: Get "http://a.b.c.d": dial tcp: lookup a.b.c.d: no such host
+# words   : 0
+# images  : 0
+------------------------------------------------
+[url: https://golang.org]
+------------------------------------------------
+# words   : 123
+# images  : 3
+------------------------------------------------
+[url: http://gopl.io]
+------------------------------------------------
+# words   : 198
+# images  : 4
+```
 
-⇒  go run main.go http://golang.org
-words: 123
-images: 3
+### Testing with an invalid url
+```bash
+⇒  go run main.go ftp://1.2.3.4
+------------------------------------------------
+[url: ftp://1.2.3.4]
+------------------------------------------------
+# error   : http GET error ftp://1.2.3.4: Get "ftp://1.2.3.4": unsupported protocol scheme "ftp"
+# words   : 0
+# images  : 0
 ```

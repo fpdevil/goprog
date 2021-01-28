@@ -1,4 +1,4 @@
-package anagrams
+package main
 
 import "testing"
 
@@ -9,6 +9,7 @@ func TestIsAnagram(t *testing.T) {
 	}{
 		{"reaps", "pears", true},
 		{"abcabc", "cacaca", false},
+		{"oranges", "potatoes", true},
 	}
 
 	for _, test := range tests {

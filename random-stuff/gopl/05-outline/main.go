@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"golang.org/x/net/html"
 )
@@ -17,74 +20,66 @@ const (
 
 func main() {
 	fmt.Println(msg)
-
-	for _, url := range os.Args[1:] {
-		outline(url)
-	}
-}
-
-//!+forEachNode
-// forEachNode function calls  the functions pre(x) and  post(x) for each
-// node x in the tree rooted at n. Both functions are optional.
-// pre is called before the children are visited (preorder)
-// post is called after the children are visited (postorder)
-func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
-	if pre != nil {
-		pre(n)
+	args := os.Args[1:]
+	if len(args) == 0 {
+		fmt.Fprintf(os.Stderr, "usage: go run %s [<url1> <url2>...]\n", filepath.Base(os.Args[0]))
+		return
 	}
 
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		forEachNode(c, pre, post)
-	}
-
-	if post != nil {
-		post(n)
-	}
-}
-
-//!-forEachNode
-
-//!+startend
-var depth int
-
-func startElement(n *html.Node) {
-	if n.Type == html.ElementNode {
-		// using * adverb in %*s prints a string padded with a variable number
-		// of space. width and string are provided by depth*2 and ""
-		fmt.Printf("%*s<%s>\n", depth*2, "", n.Data)
-		depth++
-	}
-}
-
-func endElement(n *html.Node) {
-	if n.Type == html.ElementNode {
-		depth--
-		// using * adverb in %*s prints a string padded with a variable number
-		// of space. width and string are provided by depth*2 and ""
-		fmt.Printf("%*s</%s>\n", depth*2, "", n.Data)
-	}
-}
-
-//!-startend
-
-func outline(url string) error {
-	res, err := http.Get(url)
+	sb, err := fetch(args)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "url get error %v: %v\n", url, err)
-		return err
+		fmt.Fprintf(os.Stderr, "error from fetch: %s", err.Error())
+		return
 	}
 
-	defer res.Body.Close()
-
-	doc, err := html.Parse(res.Body)
+	doc, err := html.Parse(bytes.NewReader(sb))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "url parse error %v: %v\n", url, err)
-		return err
+		fmt.Fprintf(os.Stderr, "outline error: %s\n", err.Error())
+		return
 	}
 
-	//!+call func
-	forEachNode(doc, startElement, endElement)
-	//!-call func
-
-	return nil
+	outline([]string{}, doc)
 }
+
+//#+!fetch
+// fetch function will loop over a list of http url links provided
+// as argument and makes a `GET` call to each to fetch the contetnt
+// and store them into a byte slice to return the same
+func fetch(urls []string) ([]byte, error) {
+	var sb []byte
+	for _, url := range urls {
+		resp, err := http.Get(url)
+		if err != nil {
+			fmt.Fprintf(os.Stdout, "error calling %s: %s", url, err.Error())
+			return nil, err
+		}
+
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Fprintf(os.Stdout, "error reading response: %s", err.Error())
+			return nil, err
+		}
+		resp.Body.Close()
+
+		sb = append(sb, body...)
+	}
+	return sb, nil
+}
+
+//-!fetch
+
+//+!outline
+// outline function takes a url and pushes an element onto a
+// stack, without popping out the element
+func outline(stack []string, node *html.Node) {
+	if node.Type == html.ElementNode {
+		stack = append(stack, node.Data) // push the tag
+		fmt.Printf("%v\n", stack)
+	}
+
+	for c := node.FirstChild; c != nil; c = c.NextSibling {
+		outline(stack, c)
+	}
+}
+
+//!-outline

@@ -12,16 +12,18 @@ type ByteCounter struct {
 	written int64
 }
 
-func (bc *ByteCounter) Write(p []byte) (int, error) {
-	bc.writer.Write(p)
-	bc.written += int64(len(p))
-	return len(p), nil
+func (bc *ByteCounter) Write(p []byte) (nb int, err error) {
+	nb, err = bc.writer.Write(p)
+	bc.written += int64(nb)
+	return
 }
 
 // CountingWriter function as proposed in exercise
 func CountingWriter(w io.Writer) (io.Writer, *int64) {
-	cw := ByteCounter{w, 0}
-	return &cw, &cw.written
+	cw := &ByteCounter{}
+	cw.writer = w
+	cw.written = 0
+	return cw, &cw.written
 }
 
 func main() {

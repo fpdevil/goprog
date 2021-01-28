@@ -3,20 +3,32 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/fpdevil/goprog/random-stuff/gopl/github"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
-	res, err := github.SearchIssues(os.Args[1:])
+	args := os.Args
+	if len(args) == 1 {
+		log.WithFields(log.Fields{
+			"function": "main",
+		}).Error("not enough arguments submitted.")
+		fmt.Fprintf(os.Stderr, "usage: %s <repo_name query_params...>\n", filepath.Base(args[0]))
+		return
+	}
+	result, err := github.SearchIssues(args[1:])
 	if err != nil {
-		log.Errorf("%v\n", err)
+		log.WithFields(log.Fields{
+			"function": "main",
+			"error":    err.Error(),
+		}).Error("error occurred while searching for issues.")
 		return
 	}
 
-	fmt.Printf("%d issues:\n", res.TotalCount)
-	for _, item := range res.Items {
-		fmt.Printf("#%-5d %9.9s %.55s\n", item.Number, item.User.Login, item.Title)
+	fmt.Fprintf(os.Stdout, "%d issues:\n", result.TotalCount)
+	for _, item := range result.Items {
+		fmt.Fprintf(os.Stdout, "#%5d %10.10s %.55s\n", item.Number, item.User.Login, item.Title)
 	}
 }
