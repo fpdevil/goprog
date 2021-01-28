@@ -45,7 +45,8 @@ func main() {
 	fmt.Printf("Number of words: %#v\n", wc)
 
 	lc := &LineCounter{}
-	b := []byte(`One
+	b := []byte(`
+	One
 	Two
 	Three
 	Four

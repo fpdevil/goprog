@@ -1,4 +1,3 @@
-// Exercise 5.1
 package main
 
 import (
@@ -41,26 +40,36 @@ func fetch(urls []string) ([]byte, error) {
 
 //!+visit
 // visit function traverses a html node tree, extracts the links from
-// the href attribute of eacg anchor element `<a href=...` and appends
+// attribute, images, scripts and stylesheets for each anchor and appends
 // them to a string slice and returns the same
-func visit(links []string, node *html.Node) []string {
-	if node.Type == html.ElementNode && node.Data == "a" {
-		for _, a := range node.Attr {
-			if a.Key == "href" {
-				links = append(links, a.Val)
+func visit(data map[string][]string, node *html.Node) {
+	if node.Type == html.ElementNode {
+		switch node.Data {
+		case "a":
+			for _, a := range node.Attr {
+				if a.Key == "href" {
+					data["links"] = append(data["links"], a.Val)
+				}
+			}
+		case "img", "scripts":
+			for _, i := range node.Attr {
+				if i.Key == "src" {
+					data["imgscr"] = append(data["imgscr"], i.Val)
+				}
+			}
+		case "link":
+			for _, l := range node.Attr {
+				if l.Key == "media" {
+					data["styles"] = append(data["styles"], l.Val)
+				}
 			}
 		}
 	}
 
 	// call recursively for the rest of html nodes
-	if node.FirstChild != nil {
-		links = visit(links, node.FirstChild)
+	for c := node.FirstChild; c != nil; c = c.NextSibling {
+		visit(data, c)
 	}
-	if node.NextSibling != nil {
-		links = visit(links, node.NextSibling)
-	}
-
-	return links
 }
 
 //!-visit
@@ -85,8 +94,15 @@ func main() {
 		return
 	}
 
-	for i, link := range visit([]string{}, doc) {
-		fmt.Printf("%3d: %s\n", i, link)
+	data := make(map[string][]string)
+	visit(data, doc)
+	for key, val := range data {
+		fmt.Println("----------------------------------------")
+		fmt.Printf("[[%s]]\n", key)
+		fmt.Println("----------------------------------------")
+		for i, v := range val {
+			fmt.Printf("%3d %s\n", i, v)
+		}
 	}
 }
 

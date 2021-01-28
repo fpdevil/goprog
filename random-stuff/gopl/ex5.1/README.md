@@ -32,20 +32,20 @@ Change the `findlinks` program to traverse the `n.FirstChild` linked list using 
 
 ```bash
 ⇒  go run main.go https://golang.org
-https://support.eji.org/give/153413/#!/donation/checkout
-/
-/doc/
-/pkg/
-/project/
-/help/
-/blog/
-https://play.golang.org/
-/dl/
-https://tour.golang.org/
-https://blog.golang.org/
-/doc/copyright.html
-/doc/tos.html
-http://www.google.com/intl/en/policies/privacy/
-http://golang.org/issues/new?title=x/website:
-https://google.com
+  0: https://support.eji.org/give/153413/#!/donation/checkout
+  1: /
+  2: /doc/
+  3: /pkg/
+  4: /project/
+  5: /help/
+  6: /blog/
+  7: https://play.golang.org/
+  8: /dl/
+  9: https://tour.golang.org/
+ 10: https://blog.golang.org/
+ 11: /doc/copyright.html
+ 12: /doc/tos.html
+ 13: http://www.google.com/intl/en/policies/privacy/
+ 14: http://golang.org/issues/new?title=x/website:
+ 15: https://google.com
 ```
