@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"text/template"
 	"time"
@@ -20,17 +21,19 @@ const (
 	{{end}}`
 )
 
-// daysAgo function calculates the number of days elapsed since issue surfaced
+//!+daysAgo
+// daysAgo function calculates the number of days elapsed since the
+// issue has surfaced
 func daysAgo(t time.Time) int {
 	return int(time.Since(t).Hours() / 24)
 }
 
-// template creation
-var report = template.Must(template.New("issueList").
-	Funcs(template.FuncMap{"daysAgo": daysAgo}).
-	Parse(templ))
+//!-daysAgo
 
+//!+noMust
+// noMust function
 func noMust() {
+	// create a new template with name `report`
 	report, err := template.New("report").
 		Funcs(template.FuncMap{"daysAgo": daysAgo}).
 		Parse(templ)
@@ -52,13 +55,23 @@ func noMust() {
 	}
 }
 
+//!-noMust
+
+//+!execution
+// template creation
+var report = template.Must(template.New("issueList").
+	Funcs(template.FuncMap{"daysAgo": daysAgo}).
+	Parse(templ))
+
 func main() {
-	noMust()
-	// result, err := github.SearchIssues(os.Args[1:])
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// if err := report.Execute(os.Stdout, result); err != nil {
-	// 	log.Fatal(err)
-	// }
+	// noMust()
+	result, err := github.SearchIssues(os.Args[1:])
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := report.Execute(os.Stdout, result); err != nil {
+		log.Fatal(err)
+	}
 }
+
+//-!execution
