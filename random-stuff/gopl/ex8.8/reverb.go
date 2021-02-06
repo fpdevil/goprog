@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+// echo function write the shout string to the open connection
+// with intermediate time delay
 func echo(c net.Conn, shout string, delay time.Duration) {
 	fmt.Fprintln(c, "\t", strings.ToUpper(shout))
 	time.Sleep(delay)
@@ -19,7 +21,7 @@ func echo(c net.Conn, shout string, delay time.Duration) {
 
 func handleConn(c net.Conn) {
 	ch := make(chan struct{})
-	in := bufio.NewScanner(c)
+	in := bufio.NewScanner(c) // read from input
 	go func() {
 		for {
 			if in.Scan() {
@@ -30,6 +32,8 @@ func handleConn(c net.Conn) {
 			}
 		}
 	}()
+
+	// selective match
 	for {
 		select {
 		case _, ok := <-ch:
@@ -39,6 +43,7 @@ func handleConn(c net.Conn) {
 			}
 			go echo(c, in.Text(), 1*time.Second)
 		case <-time.After(10 * time.Second):
+			fmt.Fprintln(c, ">", "timedout!")
 			c.Close()
 			return
 		}

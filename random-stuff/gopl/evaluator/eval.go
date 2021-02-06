@@ -1,3 +1,5 @@
+// Package evaluator provides an expression evaluator.
+//
 package evaluator
 
 import (
@@ -5,13 +7,12 @@ import (
 	"math"
 )
 
-//!+Env
+//+!env
 
-// A Env represents an environment needed for evaluating an
-// expression containing variables that maps names to values
+// An Env is used for evaluating an expression containing variables
 type Env map[Var]float64
 
-//!-Env
+//!-env
 
 //!+Eval
 
@@ -22,10 +23,6 @@ func (v Var) Eval(env Env) float64 {
 func (l literal) Eval(_ Env) float64 {
 	return float64(l)
 }
-
-//!-Eval
-
-//!+Eval
 
 func (u unary) Eval(env Env) float64 {
 	switch u.op {
