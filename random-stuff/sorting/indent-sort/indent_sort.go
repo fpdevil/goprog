@@ -9,16 +9,17 @@ import (
 )
 
 // elements of the Periodic table
-// https://en.wikipedia.org/wiki/Periodic_table
+// https://ptable.com/#
 var elements = []string{
 	"Nonmetals",
 	"    Noble Gases",
 	"        Helium",
 	"        Neon",
+	"        Xenon",
 	"        Argon",
 	"        Krypton",
-	"        Xenon",
-	"    Reactive",
+	"    Reactive Nonmetals",
+	"        Phosporous",
 	"        Hydrogen",
 	"        Carbon",
 	"        Nitrogen",
@@ -29,6 +30,9 @@ var elements = []string{
 	"    Germanium",
 	"    Boron",
 	"    Tellurium",
+	"    Arsenic",
+	"    Antimony",
+	"    Astatine",
 	"Metals",
 	"    Alkali Metals",
 	"        Lithium",
@@ -50,6 +54,13 @@ var elements = []string{
 	"        Neptunium",
 	"        Plutonium",
 	"        Californium",
+	"    Transition Metals",
+	"        Scandium",
+	"        Manganese",
+	"        Technitium",
+	"        Osmium",
+	"        Tungsten",
+	"        Dubnium",
 }
 
 var original = []string{
@@ -108,7 +119,7 @@ func main() {
 func printElements(slice []string) {
 	const format = "%v\t%v\t%v\t%v\t%v\n"
 	tw := new(tabwriter.Writer)
-	// minwidth, tabwidth, padding, padchar, flags
+	// output writer, minwidth, tabwidth, padding, padchar, flags
 	tw.Init(os.Stdout, 0, 8, 2, ' ', 0)
 	fmt.Fprintf(tw, format, "|", "---------------------------", "|", "---------------------------", "|")
 	fmt.Fprintf(tw, format, "|", "         Original          ", "|", "           Sorted          ", "|")
@@ -163,9 +174,12 @@ func fillIndentedStrings(entry Entry, indentedSlice *[]string) {
 	}
 }
 
+// getIndent function will determine which character (space or a tab) has
+// been used  for the indentation and  also determines how many  of these
+// characters were used to signify one level of indent.
 func getIndent(slice []string) (string, int) {
 	for _, item := range slice {
-		// check if the first element is a space ir a tab
+		// check if the first element is a space or a tab
 		if len(item) > 0 && (item[0] == ' ' || item[0] == '\t') {
 			whitespace := rune(item[0])
 			for i, char := range item[1:] {
@@ -181,7 +195,7 @@ func getIndent(slice []string) (string, int) {
 
 func fillEntries(slice []string) Entries {
 	indent, indentSize := getIndent(slice)
-	// fmt.Printf("* [%s] %d = %d *\n", indent, len(indent), indentSize)
+	fmt.Printf("* [%s] %d = %d *\n", indent, len(indent), indentSize)
 	entries := make(Entries, 0)
 	for _, item := range slice {
 		i, level := 0, 0

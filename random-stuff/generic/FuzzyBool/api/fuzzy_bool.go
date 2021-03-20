@@ -3,15 +3,17 @@ package api
 import "fmt"
 
 // FuzzyBool is the type for denoting boolean values
-type FuzzyBool struct{ value float32 }
+type FuzzyBool struct {
+	value float32
+}
 
-// New creates a new instance of the FuzzyBool for clients
-// it takes an argument which complies to an empty interface
-// which indicates that any data type can be used, which ensures
-// that the application will not crash with a wrong input
+// New  is a  contructor  function that  creates a  new  instance of  the
+// FuzzyBool for it's clients. It takes  an argument which complies to an
+// empty  interface indicating  that any  data  type may  be used,  which
+// ensures that the application will never crash with a wrong input
 func New(value interface{}) (*FuzzyBool, error) {
-	amount, err := float32ForValue(value)
-	return &FuzzyBool{amount}, err
+	result, err := float32ForValue(value)
+	return &FuzzyBool{result}, err
 }
 
 // float32ForValue is used for type casting a value in the range of
@@ -64,10 +66,11 @@ func (fuzzy *FuzzyBool) Not() *FuzzyBool {
 	return &FuzzyBool{1 - fuzzy.value}
 }
 
-// And function serves the functionality of boolean logical AND over the supplied
-// arguments. It needs atleast one argument complying to *FuzzyBool to work with
-// the first argument. It can accept 0 or more arguments. Essentially, it just
-// returns the minimum of the given fuzzy values.
+// And function serves the functionality  of boolean logical AND over the
+// supplied  arguments.  It  needs  atleast  one  argument  complying  to
+// *FuzzyBool to  work with the first  argument. It can accept  0 or more
+// arguments. Essentially, it just returns the minimum of the given fuzzy
+// values.
 func (fuzzy *FuzzyBool) And(first *FuzzyBool, rest ...*FuzzyBool) *FuzzyBool {
 	minimum := fuzzy.value
 	rest = append(rest, first)
@@ -79,9 +82,9 @@ func (fuzzy *FuzzyBool) And(first *FuzzyBool, rest ...*FuzzyBool) *FuzzyBool {
 	return &FuzzyBool{minimum}
 }
 
-// Or function serves the functionality of boolean logical OR.
-// Its logic is much similar to the And function defined earlier, with the
-// only difference being Or uses maximum variable instead of minimum.
+// Or function serves the functionality  of boolean logical OR. Its logic
+// is much  similar to the  And function  defined earlier, with  the only
+// difference being Or uses maximum variable instead of minimum.
 func (fuzzy *FuzzyBool) Or(first *FuzzyBool, rest ...*FuzzyBool) *FuzzyBool {
 	maximum := fuzzy.value
 	rest = append(rest, first)
@@ -108,6 +111,7 @@ func (fuzzy *FuzzyBool) Equal(other *FuzzyBool) bool {
 
 // Bool function returns the boolean form of the given float32 based
 // fuzzy boolean value.
+// a value which is more than 50% is deemed as true
 func (fuzzy *FuzzyBool) Bool() bool {
 	return fuzzy.value >= .5
 }

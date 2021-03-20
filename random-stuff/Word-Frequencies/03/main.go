@@ -83,6 +83,9 @@ func wordProcess(words []string) map[string]int {
 	var match bool
 	for _, w := range words {
 		w = re.ReplaceAllString(w, "")
+		if w == "" {
+			continue
+		}
 		for _, f := range noisy {
 			if strings.ToLower(w) == strings.ToLower(f) {
 				match = true

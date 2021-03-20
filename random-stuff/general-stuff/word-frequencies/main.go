@@ -28,29 +28,30 @@ func init() {
 	Formatter := new(log.JSONFormatter)
 	log.SetFormatter(Formatter)
 	log.SetOutput(os.Stdout)
-	log.SetLevel(log.InfoLevel)
+	log.SetLevel(log.DebugLevel)
 }
 
 func main() {
-	args := os.Args
-	if len(args) == 1 || args[1] == "-h" || args[1] == "--help" {
-		fmt.Fprintf(os.Stdout, msg+"\n", filepath.Base(args[0]))
-		return
-	}
-
 	logger := log.WithFields(log.Fields{
 		"main": "word-frequencies",
 	})
+	if len(os.Args) == 1 || os.Args[1] == "-h" || os.Args[1] == "help" {
+		logger.Errorf("%s started without arguments", filepath.Base(os.Args[0]))
+		fmt.Printf(msg, filepath.Base(os.Args[0]))
+		return
+	}
 	logger.Info("starting Word Frequency service...")
 
-	// create a map containing each word from the file and their count
-	frequencyPerWord := map[string]int{}
-	for _, filename := range parseCmdLine(args[1:]) {
-		updateFrequencies(filename, frequencyPerWord)
+	// define a map for holding the word and its corresponding frequency
+	frequencyOfWord := map[string]int{}
+
+	// parse the command line arguments to take the input files
+	for _, filename := range parseCmdLine(os.Args) {
+		updateFrequencies(filename, frequencyOfWord)
 	}
 
-	reportByWords(frequencyPerWord)
-	wordsPerFrequency := invertMap(frequencyPerWord)
+	reportByWords(frequencyOfWord)
+	wordsPerFrequency := invertMap(frequencyOfWord)
 	reportByFrequency(wordsPerFrequency)
 }
 
@@ -59,76 +60,70 @@ func main() {
 // The filepath.Glob returns the names of all files matching pattern or nil if
 // there is no matching file.
 // an example pattern to look for may be /usr/*/bin/sys
-func parseCmdLine(files []string) []string {
+func parseCmdLine(args []string) []string {
 	logger := log.WithFields(log.Fields{
 		"parseCmdLine": "word-frequencies",
 	})
-	// check and handle file globbing on Windows platform
 	if runtime.GOOS == "windows" {
-		args := make([]string, 0, len(files))
-		for _, name := range files {
+		files := make([]string, 0, len(args))
+		for _, name := range args {
 			if matches, err := filepath.Glob(name); err != nil {
-				args = append(args, name)
+				logger.Errorf("invalid matching path for the glob %s", err.Error())
+				files = append(files, name)
 			} else if matches != nil {
-				args = append(args, matches...)
+				logger.Debugf("found match for %v", matches)
+				files = append(files, matches...)
 			}
 		}
-		logger.Debugf("arguments %v", args)
-		return args
+		return files
 	}
-	return files
+	return args
 }
 
 // updateFrequencies function opens each supplied file and hands it over
 // to another function for the actual work/processing
-func updateFrequencies(filename string, frequencyPerWord map[string]int) {
+func updateFrequencies(filename string, fw map[string]int) {
 	logger := log.WithFields(log.Fields{
 		"updateFrequencies": "word-frequencies",
 	})
-
 	var (
 		file *os.File
 		err  error
 	)
-
 	if file, err = os.Open(filename); err != nil {
-		logger.Errorf("failed to open the file %v", err)
+		logger.Errorf("unable to open the file %s %s", filename, err.Error())
 		return
 	}
 
 	defer file.Close()
-	readAndUpdateFrequencies(bufio.NewReader(file), frequencyPerWord)
+	readAndUpdateFrequencies(bufio.NewReader(file), fw)
 }
 
 // readAndUpdateFrequencies function takes each file reader and a map
-// of frequencies per word
+// of frequencies per word and then updates the map by reading the file
 func readAndUpdateFrequencies(r *bufio.Reader, fw map[string]int) {
 	logger := log.WithFields(log.Fields{
 		"readAndUpdateFrequencies": "word-frequencies",
 	})
-
 	for {
 		line, err := r.ReadString('\n')
-		// discard any non word characters
-		for _, word := range SplitOnNonLetters(strings.TrimSpace(line)) {
-			// only include words which contain atleast 2 letters
-			// const utf8.UTFMax = 4
+		for _, word := range SplitAtNonLetters(strings.TrimSpace(line)) {
+			// check that the word has atleast 2 characters.
 			if len(word) > utf8.UTFMax || utf8.RuneCountInString(word) > 1 {
 				fw[strings.ToLower(word)]++
 			}
 		}
 		if err != nil {
 			if err != io.EOF {
-				logger.Errorf("failed to completely read the file %v", err)
+				logger.Errorf("failed to finish reading the file: %s", err.Error())
 			}
-			break
 		}
+		break
 	}
 }
 
-// SplitOnNonLetters function just splits a string at nonword characters
-func SplitOnNonLetters(s string) []string {
-	// create an anonymous function
+// SplitAtNonLetters function just splits a string at the non-word characters
+func SplitAtNonLetters(s string) []string {
 	nonLetter := func(char rune) bool {
 		return !unicode.IsLetter(char)
 	}
@@ -136,34 +131,29 @@ func SplitOnNonLetters(s string) []string {
 }
 
 // reportByWords function renders the data populated inside the map
-// fw which has words to frequency mappings
+// fw which has words to frequency mappings alphabetically
 func reportByWords(fw map[string]int) {
 	words := make([]string, 0, len(fw))
-	var (
-		wordWidth      int // width in characters of longest word
-		frequencyWidth int // highest frequency
-	)
-
+	wordWidth, frequencyWidth := 0, 0
 	for word, frequency := range fw {
 		words = append(words, word)
 		if width := utf8.RuneCountInString(word); width > wordWidth {
 			wordWidth = width
 		}
-		if width := len(fmt.Sprint(frequency)); width > frequencyWidth {
-			frequencyWidth = width
+		if fwidth := len(fmt.Sprint(frequency)); fwidth > frequencyWidth {
+			frequencyWidth = fwidth
 		}
 	}
-
-	// sort the slice
 	sort.Strings(words)
-	gap := wordWidth + frequencyWidth - len("Word") - len("Frequency")
+	gap := (wordWidth + frequencyWidth) - (len("Word") + len("Frequency"))
 	fmt.Printf("Word %*s%s\n", gap, " ", "Frequency")
-	fmt.Printf("%s\n", strings.Repeat("-", len("Word")+1+gap+1+len("Frequency")))
 	for _, word := range words {
 		fmt.Printf("%-*s %*d\n", wordWidth, word, frequencyWidth, fw[word])
 	}
 }
 
+// invertMap function inverts a map from string to int into a map
+// pointing from int to []string
 func invertMap(intPerString map[string]int) map[int][]string {
 	stringsPerInt := make(map[int][]string, len(intPerString))
 	for key, value := range intPerString {
@@ -172,20 +162,19 @@ func invertMap(intPerString map[string]int) map[int][]string {
 	return stringsPerInt
 }
 
+// reportByFrequency function prints the output of map to Stdout by
+// sorting the same by frequencies
 func reportByFrequency(wordsPerFrequency map[int][]string) {
 	frequencies := make([]int, 0, len(wordsPerFrequency))
-	for f := range wordsPerFrequency {
-		frequencies = append(frequencies, f)
+	for frequency := range wordsPerFrequency {
+		frequencies = append(frequencies, frequency)
 	}
-
 	sort.Ints(frequencies)
 	width := len(fmt.Sprint(frequencies[len(frequencies)-1]))
-	fmt.Println()
-	fmt.Println("Frequency -> Words")
-	fmt.Printf("%s\n", strings.Repeat("-", len("Frequency")+4+len("Words")))
-	for _, f := range frequencies {
-		words := wordsPerFrequency[f]
+	fmt.Println("Frequency → Words")
+	for _, frequency := range frequencies {
+		words := wordsPerFrequency[frequency]
 		sort.Strings(words)
-		fmt.Printf("%*d %s\n", width, f, strings.Join(words, ", "))
+		fmt.Printf("%*d %s\n", width, frequency, strings.Join(words, ", "))
 	}
 }

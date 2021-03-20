@@ -1,7 +1,7 @@
 # FuzzyBool - A singular valued common type system
 
 
-Instead of the built-in `bool` type that supports either a `true` ir a `false`, the `FuzzyBool` will support the intermediary truth values apart from the `true` and `false`.
+Instead of the built-in `bool` type that supports either a `true` or a `false`, the `FuzzyBool` will support the intermediary truth values apart from just the `true` and `false`. Such types are generally used in the areas of artificial intelligence where `Baye's theorem` is used to denote how much percentage an item is *true* and how much percentage it is *false*.
 
 For instance if we represents booleans as floating point values and denote the `true` and `false` as below,
 

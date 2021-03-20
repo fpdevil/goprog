@@ -73,6 +73,10 @@ func main() {
 func wordProcess(words []string) map[string]int {
 	for _, w := range words {
 		w = re.ReplaceAllString(w, "")
+		if w == "" {
+			// eliminate the empty characters from the count
+			continue
+		}
 		results[w] = results[w] + 1
 	}
 	return results

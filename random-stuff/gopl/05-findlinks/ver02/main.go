@@ -11,7 +11,7 @@ import (
 //!+visit
 // visit function traverses a html node tree, extracts the links from
 // the href attribute of eacg anchor element `<a href=...` and appends
-// them to a string slice and returns the same
+// the url value of href to a string slice and returns the same
 func visit(links []string, node *html.Node) []string {
 	if node.Type == html.ElementNode && node.Data == "a" {
 		for _, a := range node.Attr {
@@ -60,8 +60,9 @@ func main() {
 			fmt.Fprintf(os.Stderr, "findLinks: %v\n", err)
 			continue
 		}
-		for _, link := range links {
-			fmt.Fprintf(os.Stdout, "%v\n", link)
+		for i, link := range links {
+			// fmt.Fprintf(os.Stdout, "%v\n", link)
+			fmt.Printf("*%4d: %v\n", i, link)
 		}
 	}
 }

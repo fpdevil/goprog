@@ -47,7 +47,6 @@ func trailingZeros(num float64) (float64, error) {
 			zeros += math.Floor(v)
 		}
 		return zeros, nil
-	} else {
-		return 0.0, fmt.Errorf("factorial for non-positive integer %v is not defined", num)
 	}
+	return 0.0, fmt.Errorf("factorial for non-positive integer %v is not defined", num)
 }

@@ -43,7 +43,9 @@ func main() {
 func producer(id int) {
 	wg.Add(1)
 	go func() {
-		fmt.Printf("producer #%v - finished\n", id)
+		if id%500 == 0 {
+			fmt.Printf("producer #%v - finished\n", id)
+		}
 		n := r.Intn(5000)
 		d := time.Duration(n) * time.Nanosecond
 		time.Sleep(d)

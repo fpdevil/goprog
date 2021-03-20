@@ -2,7 +2,7 @@
 
 `Fan-In` can be considered as the opposite of `Fan-Out`.
 
-`Fan-In` can be considered as a function that might read from multiple inputs and continue until all are closed by multiplexing the input cannels onto a single channel which is closed once all the inputs are closed.
+`Fan-In` can be considered as a function that might read from multiple inputs and continue until all are closed by multiplexing the input channels onto a single channel which is closed once all the inputs are closed.
 
 Essentially `Fan-In` is a process of combining multiple results from `goroutines` into one channel.
 
