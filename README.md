@@ -2,6 +2,10 @@
 
 A series of random stuff which I am playing with `golang` as a part of my continued effort to grasp the language features.
 
+## Miscellaneous code
+
+Some of the random code fragments I revisit as a part of my continuous learning initiative are in [gemeric](https://github.com/fpdevil/goprog/tree/master/random-stuff/generic)
+
 ## GOPL
 
 Selective exercises from the excellent book `The Go Programming Language`
