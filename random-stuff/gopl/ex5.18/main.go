@@ -30,20 +30,22 @@ func main() {
 		return
 	}
 
-	nodes := ElementsByTag(doc, tagnames...)
+	nodes := ElementsByTagName(doc, tagnames...)
 
 	for _, node := range nodes {
-		fmt.Printf("%v\n", node)
+		fmt.Printf("%+v\n", node)
 	}
 }
 
-func ElementsByTag(doc *html.Node, name ...string) []*html.Node {
+// ElementsByTagName takes a html node and returns all the elements which
+// match a value from the provided list of names
+func ElementsByTagName(doc *html.Node, name ...string) []*html.Node {
 	var nodes []*html.Node
 	pre := func(node *html.Node) {
 		if node.Type == html.ElementNode {
 			for _, n := range name {
-				if node.Data == n {
-					nodes = append(nodes, node)
+				if node.Data == n && node.FirstChild != nil {
+					nodes = append(nodes, node.FirstChild)
 				}
 			}
 		}

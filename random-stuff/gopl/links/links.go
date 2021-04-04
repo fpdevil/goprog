@@ -11,7 +11,8 @@ import (
 //!+Extract
 
 // Extract function makes an HTTP GET request to the specified URL, parses
-// the response as HTML and returns the links in the HTML document.
+// the response as HTML and returns the links contained in the html anchor
+// nodes `<a href=` of the HTML document as a string slice.
 func Extract(url string) ([]string, error) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -41,6 +42,7 @@ func Extract(url string) ([]string, error) {
 				if a.Key != "href" {
 					continue
 				}
+				// parse the URL relative to the base URL of document
 				link, err := resp.Request.URL.Parse(a.Val)
 				if err != nil {
 					log.Errorf("ignoring bad url: %s", url)
@@ -57,6 +59,13 @@ func Extract(url string) ([]string, error) {
 
 //!-Extract
 
+//+ forEachNode
+//
+
+// forEachNode function calls  the functions pre(x) and  post(x) for each
+// node x in the tree rooted at  node n. Both these functons are optional
+// pre is caled before children are visited (preorder)
+// post is called after children are visited (postorder)
 func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
 	if pre != nil {
 		pre(n)
@@ -68,3 +77,5 @@ func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
 		post(n)
 	}
 }
+
+//!- forEachNode

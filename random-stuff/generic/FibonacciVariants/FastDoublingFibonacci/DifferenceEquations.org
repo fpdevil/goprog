@@ -1,0 +1,284 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:{} arch:headline author:t
+#+OPTIONS: broken-links:nil c:nil creator:nil d:(not "LOGBOOK") date:t e:t
+#+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t tags:t
+#+OPTIONS: tasks:t tex:t timestamp:t title:t toc:t todo:t |:t
+#+TITLE: Fast Doubling Fibonacci Series Calculation
+#+DESCRIPTION: A brief description about using fast doubling for Fibonacci.
+#+AUTHOR: Sampath Singamsetty
+#+EMAIL: Singamsetty.Sampath@gmail.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+
+#+LATEX_HEADER: \usepackage[utf8x]{inputenc} %% For unicode chars
+#+LaTeX_HEADER: \usepackage{xparse}
+#+LATEX_HEADER: \usepackage[english]{babel}
+#+LATEX_HEADER: \usepackage{amsmath,amssymb}
+#+LaTeX_HEADER: \usepackage[ttscale=.875]{libertine}
+#+LATEX_OPTIONS: \usepackage[]{minted}
+#+LATEX_OPTIONS: \usepackage{lineno}
+
+#+LaTeX_OPTIONS: \usepackage{booktabs}
+#+LaTeX_OPTIONS: \usepackage{multirow}
+
+
+# uses fonts to support Greek letters etc...
+#+LATEX_HEADER: \usepackage{fontspec}
+#+LATEX_HEADER: \setmonofont{Monaco}
+#+LaTeX_HEADER: \usepackage{sectsty}
+#+LaTeX_HEADER: \sectionfont{\normalfont\scshape}
+#+LaTeX_HEADER: \subsectionfont{\normalfont\itshape}
+
+#+LATEX_HEADER: \usepackage[linktocpage, pdfstartview=FitH, colorlinks, linkcolor=cyan, anchorcolor=black, citecolor=purple, filecolor=blue, menucolor=blue, urlcolor=teal]{hyperref}
+#+LATEX_HEADER: \usepackage{tabularx,siunitx,booktabs}
+#+LATEX_HEADER: \usepackage{caption}
+#+LaTeX_HEADER: \usepackage{colortbl}
+#+LATEX_HEADER: \usepackage{adjustbox}
+#+LATEX_HEADER: \usepackage{longtable}
+#+LATEX_HEADER: \usepackage{lipsum}
+#+LATEX_HEADER: \usepackage{placeins}
+
+#+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER:\setlength{\parindent}{1cm}
+
+#+name: table-caption
+#+begin_src emacs-lisp :exports none :results silent
+(setq org-export-latex-table-caption-above nil)
+#+end_src
+
+* Fibonacci Series
+
+The usual *Fibonacci Sequence* is defined as below which obviously is a
+difference equation.
+
+\begin{equation} \label{eq:1}
+\begin{align*}
+F_0 = 0\\
+F_1 = 1\\
+F_n = F_{n - 2} + F_{n - 1}
+\end{align*}
+\end{equation}
+
+
+The same when expressed in a matrix format can be written as below
+
+\begin{equation} \label{eq:2}
+\begin{align*}
+\begin{bmatrix}
+  F_{n}  \\
+  F_{n-1}
+\end{bmatrix} \\
+{} &= \begin{bmatrix}
+  1 & 1  \\
+  1 & 0
+\end{bmatrix} \times
+\begin{bmatrix}
+  F_{n-1} \\
+  F_{n-2}
+\end{bmatrix}
+\end{align*}
+\end{equation}
+
+That is, each _Fibonacci number_ F_{n} is the sum of the two previous ~Fibonacci
+numbers~, except for the very first two numbers which are defined to be ~0~ and ~1~.
+
+With the above definition, it appears that computing F_{n} requires one to always
+compute F_{n-1} and F_{n-2}.
+
+* Difference equations
+
+A ~Difference equation~ may be regarded as an equation consisting of a finite
+differences of an unknown equation. The /Differential equations/ are suitable
+for ~continuous systems~, but cannot be used for ~discrete variables~. Difference
+equations are the discrete equivalent of differential equations and arise
+whenever an independent variable can have only discrete values.
+
+They have a wide area of importance in engineering particularly due to their
+applications in discrete time-systems used in association with
+microprocessors.
+
+They are also widely used in studying the mathematical modeling of biological
+systems. Mathematical models of biological systems are often expressed in
+terms of ~differential equations~. The reason for this being that biological
+systems are dynamical, changing with respect to time, space, or stage of
+development.
+
+Difference equations are relationships between quantities as they change over
+discrete time intervals ($t = 0, 1, 2,\dots$). Differential equations describe
+changes in quantities over continuous time intervals ($0 \le t \le \infty$). The
+quantities modeled by the difference or differential equations are called
+~states~ of the system.
+
+** Mathematical properties of the Difference operator
+
+The *Forward Difference Operator* $\Delta$ is defined as $\Delta f(x) =
+f(x + h) - f(x)$, where ~h~ is step size and this this formula uses the values
+at $x$ and $x+h$ to calculate the point at the next step.
+
+For $x = x_{i}$, the above equation may be represented as $\Delta f(x_{i}) = f(x_{i} + h) -
+f(x_{i})$.
+
+*** First Order Differences
+The values, $\Delta y_{0}, \Delta y_{1}, \dots, \Delta y_{n-1}$ are called the ~First Order
+Differences~.
+
+\begin{equation} \label{eq:3}
+\begin{align*}
+\Delta y_{i} & = y_{i+1} - y_{i }&& \text{By taking h = 1 unit, and for i = 0, 1, 2, \dots, n - 1} \\
+\Delta y_{0} & = y_{1} - y_{0} \\
+\Delta y_{1} & = y_{2} - y_{1} \\
+\vdots \\
+\Delta y_{n} & = y_{n+1} - y_{n} \\
+\end{align*}
+\end{equation}
+
+*** Second Order Differences
+
+The differences of the ~First Order Differences~ are called ~Second Order
+Differences~ denoted by $\Delta^{2}y_{0}, \Delta^{2}y_{1}, \dots$ which are described next.
+
+From the first order difference relation \ref{eq:3} described above, we can write and
+expand the second order difference relation $\Delta^{2}y_{0} = \Delta y_{1} - \Delta y_{0}$ as below:
+
+\begin{equation} \label{eq:4}
+\newcommand*{\Comb}[2]{{}^{#1}C_{#2}}%
+\begin{align*}
+\Delta^{2}y_{0} & = \Delta y_{1} - \Delta y_{0} \\
+    & = (y_{2} - y_{1}) - (y_{1} - y_{0}) \\
+    & = (y_{2} - 2y_{1} + y_{0}) \\
+\Delta^{2}y_{1} & = \Delta y_{2} - \Delta y_{1} \\
+    & = (y_{3} - y_{2}) - (y_{2} - y_{1}) \\
+    & = (y_{3} - 2y_{2} + y_{1}) \\
+\vdots \\
+\end{align*}
+\end{equation}
+
+*** Higher Order Differences
+
+Similar to the ~First~ and ~Second~ order, the ~Higher~ order differences may be
+derived as below.
+
+\begin{equation} \label{eq:5}
+\newcommand*{\Comb}[2]{{}^{#1}C_{#2}}%
+\begin{align*}
+\Delta^{3}y_{0} & = \Delta^{2} y_{1} - \Delta^{2} y_{0} \\
+    & = (y_{3} - 2y_{2} + y_{1}) - (y_{2} - 2y_{1} + y_{0}) \\
+    & = (y_{3} - 3y_{2} + 3y_{1} - y_{0}) \\
+\Delta^{3}y_{1} & = (y_{4} - 3y_{3} + 3y_{2} - y_{1}) \\
+\vdots \\
+\Delta^{n}y_{0} & = y_{n} - \Comb{n}{1}y_{n-1} + \Comb{n}{2}y_{n-2} - \dots + (-1)^{n-1}\Comb{n}{n-1}y_{1} + (-1)^{n}y_{0} \\
+\text{Generalizing on the above, we get} \\
+\Delta^{n}y_{r} & = y_{n+r} - \Comb{n}{1}y_{n+r-1} + \Comb{n}{2}y_{n+r-2} - \dots + (-1)^{r}y_{r}
+\end{align*}
+\end{equation}
+
+In general, from the relation \ref{eq:5} we can write $\Delta^{n+1}y_{i} = \Delta^{n}y_{i+1} - \Delta^{n}y_{i}$
+for $n = 0, 1, 2, \dots$
+
+Also, it must be noted that $\Delta^{0}$ is an ~Identity Operator~. i.e., $\Delta^{0}f(x) = f(x)$ and $\Delta^{1} = \Delta$.
+
+*** Difference table
+All the /forward differences/ may be represented in a tabular form called the
+~Forward Difference~ or ~Diagonal Difference~ table. If $x_{0}, x_{1}, x_{2}, x_{3}
+and x_{4}$ be four arguments, then all the forward differences of these arguments
+can be represented as shown in the table [[forward-difference-table]].
+
+#+CAPTION: Forward Difference Table
+#+NAME: forward-difference-table
+#+ATTR_LATEX: \captionsetup[table]{skip=10pt}
+#+ATTR_LATEX: :align c c c c c c
+#+ATTR_LATEX: :placement [!h]
+#+ATTR_LATEX: \caption{Forward or Diagonal Difference Table}
+#+ATTR_LATEX: \label{tab:forward-difference-table}
+|----+----+------+------+------+------|
+| x  | y  | \Delta    | \Delta^{2}   | \Delta^{3}   | \Delta^{4}   |
+|----+----+------+------+------+------|
+| x_{0} | y_{0} |      |      |      |      |
+|    |    | \Delta y_{0} |      |      |      |
+| x_{1} | y_{1} |      | \Delta^{2}y_{0} |      |      |
+|    |    | \Delta y_{1} |      | \Delta^{3}y_{0} |      |
+| x_{2} | y_{2} |      | \Delta^{2}y_{1} |      | \Delta^{4}y_{0} |
+|    |    | \Delta y_{2} |      | \Delta^{3}y_{2} |      |
+|    |    | \Delta y_{3} |      |      |      |
+| x_{4} | y_{4} |      |      |      |      |
+|----+----+------+------+------+------|
+
+\FloatBarrier
+
+*** Propagation of errors in Difference table
+If any of the entries in the difference table throws an error, the same would
+spread across the table in a convex manner. The propagation of error in a
+difference table is illustrated in the table [[error-table]].
+As an example considering $y_{3}$ to be erroneous with an error amount of $\epsilon$,
+the following observations may be noted.
+
+#+CAPTION: Error Propagation in Finite Difference Table
+#+NAME: error-table
+#+ATTR_LATEX: \captionsetup[table]{skip=10pt}
+#+ATTR_LATEX: :align c c c c c c c c
+#+ATTR_LATEX: :placement [!h]
+#+ATTR_LATEX: \caption{Error Propagation in Finite Difference Table}
+#+ATTR_LATEX: \label{tab:error-table}
+|----+--------+----------+-----------+------------+-----------+------------|
+| x  | y      | \Delta y      | \Delta^{2}y       | \Delta^{3}y        | \Delta^{4}y       | \Delta^{5}y        |
+|----+--------+----------+-----------+------------+-----------+------------|
+| x_{0} | y_{0}     |          |           |            |           |            |
+|    |        | \Delta y_{0}     |           |            |           |            |
+| x_{1} | y_{1}     |          | \Delta^{2}y_{0}      |            |           |            |
+|    |        | \Delta y_{1}     |           | \Delta^{3}y_{0} + \epsilon   |           |            |
+| x_{2} | y_{2}     |          | \Delta^{2}y_{1} + \epsilon  |            | \Delta^{4}y_{0} - 4\epsilon |            |
+|    |        | \Delta y_{2} + \epsilon |           | \Delta^3y_{1} - 3\epsilon |           | \Delta^{5}y_{0} + 10\epsilon |
+| x_{3} | y_{3} - \epsilon |          | \Delta^{2}y_{2} - 2\epsilon |            | \Delta^{4}y_{1} + 6\epsilon |            |
+|    |        | \Delta y_{3} - \epsilon |           | \Delta^3y_{2} + 3\epsilon |           | \Delta^{5}y_{0} - 10\epsilon |
+| x_{4} | y_{4}     |          | \Delta^{2}y_{3} + \epsilon  |            | \Delta^{4}y_{2} - 4\epsilon |            |
+|    |        | \Delta y_{4}     |           | \Delta^{3}y_{3} - \epsilon   |           |            |
+| x_{5} | y_{5}     |          | \Delta^{2}y_{4}      |            |           |            |
+|    |        | \Delta y_{5}     |           |            |           |            |
+| x_{6} | y_{6}     |          |           |            |           |            |
+|----+--------+----------+-----------+------------+-----------+------------|
+
+\FloatBarrier
+
+From the table [[error-table]], it can be observed that:
+
+- As the order of difference increases, the error increases
+- The coefficients of errors in the $k^{th}$ difference column are the binomial
+  coefficients in the expansion of $(1 - x)^{n}$. Particularly, the $2^{nd}$
+  difference column has errors $\epsilon, -2\epsilon, \epsilon$ and the $3^{rd}$ difference column has
+  errors $\epsilon, -3\epsilon, 3\epsilon, \epsilon$ and so on.
+- The algebraic sum of errors in any full column is zero.
+- Wherever there was an error, the differences did not follow a smooth pattern.
+
+** Some common properties of the Forward Difference Operator ("\Delta")
+Below are some of the properties which the forward difference operator $\Delta$
+satisfies, that might be useful:
+
+\begin{equation} \label{eq:6}
+\begin{align*}
+\Delta c & = 0, && \text{c being a constant} \\
+\Delta[cf(x)] & = c\Delta f(x) \\
+\Delta[af(x) \pm bg(x)] & = a\Delta f(x) \pm b\Delta g(x) \\
+\Delta^{m}\Delta^{n}f(x) & = \Delta^{m+n}f(x) \\
+        & = \Delta^{n+m}f(x) \\
+        & = \Delta^{k}\Delta^{m+n-k}f(x) && \text{k = 0, 1, 2, \dots, m or n} \\
+\Delta[c^{x}] & = c^{x+h} - c^{x} \\
+      & = c^{x}(c^{h} - 1) && \text{for some constant c}
+\end{align*}
+\end{equation}
+
+* Fast Doubling method
+The ~Fast Doubling Method~ is perhaps the fastest way of computing a Fibonacci
+sequence and the method uses a matrix multiplication approach for the fast
+calculation of Fibonacci number sequence.
+
+\begin{equation} \label{eq:7}
+\begin{bmatrix}
+a & b\\
+c & d
+\end{bmatrix}^{n}
+=
+\begin{bmatrix}
+F_{n+1} & F_{n} \\
+F_{n} & F_{n-1}
+\end{bmatrix}
+\end{equation}

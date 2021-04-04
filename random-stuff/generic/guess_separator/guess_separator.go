@@ -24,16 +24,22 @@ func main() {
 		return
 	}
 
-	separators := []string{"\t", "*", "|", "•"}
+	// list of separators in the files; for whitespace an empty "" is used
+	separators := []string{"\t", "*", "|", "•", "^M"}
 
-	// read till first 5 lines of the file
+	// read atleast till the first 5 lines of the file or as many lines
+	// as the files have to deduce the separator
 	linesRead, lines := readTillNLines(os.Args[1], 5)
 	counts := createCounts(lines, separators, linesRead)
 	separator := guessSeparator(counts, separators, linesRead)
 	report(separator)
 }
 
-// readTillNLines function reads the first N lines of a file
+//!+readTillNLines
+
+// readTillNLines function reads the first  N lines from a file
+// and returns the number of lines actually read as well as the
+// lines themselves
 func readTillNLines(filename string, maxLines int) (int, []string) {
 	logger := log.WithFields(log.Fields{
 		"readTillNLines": "guess_separator",
@@ -66,6 +72,10 @@ func readTillNLines(filename string, maxLines int) (int, []string) {
 	return i, lines[:i]
 }
 
+//!-readTillNLines
+
+//!+createCounts
+
 // createCounts function populates a matrix to hold the counts
 // of each separator for each line read.
 // each row represents the number of occurrences of the separator
@@ -81,6 +91,8 @@ func createCounts(lines, separators []string, linesRead int) [][]int {
 	}
 	return counts
 }
+
+//!-createCounts
 
 // guessSeparator function as the name indicates discovers the separators in
 // the lines from files. The function finds the first []int in counts slices
@@ -110,7 +122,9 @@ func report(separator string) {
 		fmt.Println("whitespace separated or not separated at all!")
 	case "\t":
 		fmt.Println("tab separated!")
+	case "^M":
+		fmt.Printf("line has Windows ^M characters!")
 	default:
-		fmt.Println("%s separated\n", separator)
+		fmt.Printf("%s separated\n", separator)
 	}
 }

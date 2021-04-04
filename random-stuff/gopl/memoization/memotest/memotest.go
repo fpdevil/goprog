@@ -1,3 +1,5 @@
+// Package memotest provides some common functions
+// for testing variants of the memo package
 package memotest
 
 import (
@@ -10,11 +12,15 @@ import (
 	"time"
 )
 
+// HTTPGetBody holds a reference to the function httpGetBody
 var HTTPGetBody = httpGetBody
 
+// M interface has a single method Get which needs to be satisfied
 type M interface {
 	Get(key string) (interface{}, error)
 }
+
+//!+httpGetBody
 
 func httpGetBody(url string) (interface{}, error) {
 	resp, err := http.Get(url)
@@ -25,7 +31,10 @@ func httpGetBody(url string) (interface{}, error) {
 	return ioutil.ReadAll(resp.Body)
 }
 
-func incomingURLs() <-chan string {
+//!-httpGetBody
+
+//!+fillURLs
+func fillURLs() <-chan string {
 	ch := make(chan string)
 	go func() {
 		for _, url := range []string{
@@ -37,7 +46,6 @@ func incomingURLs() <-chan string {
 			"https://godoc.org",
 			"https://play.golang.org",
 			"http://gopl.io",
-			"https://httpbin.org",
 		} {
 			ch <- url
 		}
@@ -46,32 +54,42 @@ func incomingURLs() <-chan string {
 	return ch
 }
 
+//!-fillURLs
+
+//!+Sequential
+
 func Sequential(t *testing.T, m M) {
-	for url := range incomingURLs() {
+	for url := range fillURLs() {
 		start := time.Now()
 		value, err := m.Get(url)
 		if err != nil {
-			log.Print(err)
+			log.Print(url)
 			continue
 		}
-		fmt.Printf("%s, %s, %d bytes\n", url, time.Since(start), len(value.([]byte)))
+		fmt.Printf("* %-30s, %-5.15s, %d bytes\n", url, time.Since(start), len(value.([]byte)))
 	}
 }
 
+//!-Sequential
+
+//!+Concurrent
+
 func Concurrent(t *testing.T, m M) {
-	var n sync.WaitGroup
-	for url := range incomingURLs() {
-		n.Add(1)
+	var wg sync.WaitGroup
+	for url := range fillURLs() {
+		wg.Add(1)
 		go func(url string) {
-			defer n.Done()
+			defer wg.Done()
 			start := time.Now()
 			value, err := m.Get(url)
 			if err != nil {
 				log.Print(err)
 				return
 			}
-			fmt.Printf("%s, %s, %d bytes\n", url, time.Since(start), len(value.([]byte)))
+			fmt.Printf("* %-30s, %-5.15s, %d bytes\n", url, time.Since(start), len(value.([]byte)))
 		}(url)
 	}
-	n.Wait()
+	wg.Wait()
 }
+
+//!-Concurrent

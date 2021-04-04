@@ -18,6 +18,20 @@ var (
 	done    = make(chan struct{})
 )
 
+//!+cancelled
+// cancelled function checks or polls the cancellation state
+// at the instant it is called
+func cancelled() bool {
+	select {
+	case <-done:
+		return true
+	default:
+		return false
+	}
+}
+
+//!-cancelled
+
 func main() {
 	fmt.Println("** Disk Usage **")
 	flag.Parse()
@@ -26,7 +40,10 @@ func main() {
 		roots = []string{"."}
 	}
 
-	// Cancel directory traversal when input is detected.
+	// this go routine will read from the standard input
+	// and upon any input from the user, broadcasts the
+	// cancellation by closing the done channel
+	// cancel directory traversal when input is detected.
 	go func() {
 		os.Stdin.Read(make([]byte, 1)) // read a single byte
 		close(done)
@@ -85,6 +102,9 @@ loop:
 var sem = make(chan struct{}, 20)
 
 // dirents function returns the entries of a directory dir
+// this version uses a counting semaphore to prevent opening
+// too many files at once as the program creates thousands of
+// gorotines at its peak
 func dirents(dir string) []os.FileInfo {
 	select {
 	case sem <- struct{}{}: // acquiring the token
@@ -122,13 +142,4 @@ func walkDir(dir string, wg *sync.WaitGroup, fileSizes chan<- int64) {
 
 func printDiskUsage(nfiles, nbytes int64) {
 	fmt.Printf("%d files %.1f GB\n", nfiles, float64(nbytes)/1e9)
-}
-
-func cancelled() bool {
-	select {
-	case <-done:
-		return true
-	default:
-		return false
-	}
 }

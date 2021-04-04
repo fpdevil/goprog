@@ -31,11 +31,11 @@ func fetch(url string) (filename string, n int64, err error) {
 
 	n, err = io.Copy(f, resp.Body)
 	// now close the file, but prefer error from Copy if any
-	if closeErr := f.Close(); err != nil {
+	if closeErr := f.Close(); err == nil {
 		err = closeErr
 	}
 
-	return local, n, err
+	return
 }
 
 //!-fetch

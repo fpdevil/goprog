@@ -26,6 +26,10 @@ func length(s string) time.Duration {
 	return d
 }
 
+// tracks variable contains a playlist
+// each track is a single row and each column is an attribute of the
+// track like title, artist, album, year and duration; each element
+// is indirectly a pointer to a track
 var tracks = []*Track{
 	{"Go", "Delilah", "From the Roots Up", 2012, length("3m38s")},
 	{"Go", "Moby", "Moby", 1992, length("3m37s")},
@@ -34,6 +38,8 @@ var tracks = []*Track{
 	{"2045: Radical Man", "Prince", "Bamboozled", 2000, length("6m36s")},
 	{"The Calm", "Andy Allo", "Superconductor", 2012, length("5m20s")},
 	{"Cold Coffee & Cocaine", "Prince", "Piano & A Microphone", 1983, length("4m17s")},
+	{"Feelin' the Same Way", "Norah Jones", "Come Away with Me", 2002, length("2m57s")},
+	{"Find the Answer", "Arashi", "5x20 All the Best!! 1999–2019", 2020, length("4m3s")},
 }
 
 //!+printTracks
@@ -43,7 +49,7 @@ func printTracks(tracks []*Track) {
 
 	// initialize the tabwriter
 	tw := new(tabwriter.Writer)
-	// minwidth, tabwidth, padding, padchar, flags
+	// set fields output, minwidth, tabwidth, padding, padchar, flags
 	tw.Init(os.Stdout, 0, 8, 2, ' ', 0)
 
 	fmt.Fprintf(tw, format, "Title", "Artist", "Album", "Year", "Length")
@@ -51,7 +57,7 @@ func printTracks(tracks []*Track) {
 	for _, t := range tracks {
 		fmt.Fprintf(tw, format, t.Title, t.Artist, t.Album, t.Year, t.Length)
 	}
-	tw.Flush()
+	tw.Flush() // flush formats table and writes to os.Stdout
 }
 
 //!-printTracks
@@ -142,6 +148,7 @@ func main() {
 	fmt.Println()
 	fmt.Println("Multi-tier ordering")
 	fmt.Printf("%s\n", strings.Repeat("*", 75))
+
 	// define a multi-tier ordering function whose primary sort key
 	// is Title, whose secondary key is Year, and whose tertiary key
 	// is the running time, length

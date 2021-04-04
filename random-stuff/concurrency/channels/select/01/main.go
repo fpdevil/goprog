@@ -13,7 +13,7 @@ func main() {
 	start := time.Now()
 
 	var (
-		total = 1000
+		total            = 1000
 		c1Count, c2Count int
 	)
 
@@ -21,7 +21,6 @@ func main() {
 	close(c1)
 	c2 := make(chan interface{})
 	close(c2)
-
 
 	for i := total; i >= 0; i-- {
 		select {
@@ -32,8 +31,6 @@ func main() {
 		}
 	}
 
-	elapsed := time.Since(start)
-
 	// get the percentage count of messages to channel in select
 	f1 := (float64(c1Count) / float64(total)) * 100
 	f2 := (float64(c2Count) / float64(total)) * 100
@@ -42,5 +39,6 @@ func main() {
 	fmt.Printf("* Probability of c2: %.4v%%\n", f2)
 
 	fmt.Println()
+	elapsed := time.Since(start)
 	fmt.Printf("Total time taken: %v\n", elapsed)
 }

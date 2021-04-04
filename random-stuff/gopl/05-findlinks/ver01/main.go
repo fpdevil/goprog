@@ -20,17 +20,17 @@ func fetch(urls []string) ([]byte, error) {
 	for _, url := range urls {
 		resp, err := http.Get(url)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "error calling %s: %s", url, err.Error())
+			fmt.Fprintf(os.Stderr, "error calling %s: %s", url, err.Error())
 			return nil, err
 		}
 
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "error reading response: %s", err.Error())
+			fmt.Fprintf(os.Stderr, "error reading response: %s", err.Error())
 			return nil, err
 		}
 		resp.Body.Close()
-
+		// aggregate all the response bytes from all url's
 		sb = append(sb, body...)
 	}
 	return sb, nil
@@ -40,8 +40,8 @@ func fetch(urls []string) ([]byte, error) {
 
 //!+visit
 // visit function traverses a html node tree, extracts the links from
-// the href attribute of eacg anchor element `<a href=...` and appends
-// them to a string slice and returns the same
+// the href attribute of each anchor element `<a href=...` and appends
+// the url value of href to a string slice and returns the same
 func visit(links []string, node *html.Node) []string {
 	if node.Type == html.ElementNode && node.Data == "a" {
 		for _, a := range node.Attr {
@@ -75,14 +75,14 @@ func main() {
 		return
 	}
 
-	doc, err := html.Parse(bytes.NewReader(sb))
+	node, err := html.Parse(bytes.NewReader(sb))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "findlinks error: %s\n", err.Error())
 		return
 	}
 
-	for i, link := range visit([]string{}, doc) {
-		fmt.Printf("%3d: %s\n", i, link)
+	for i, link := range visit([]string{}, node) {
+		fmt.Printf("*%4d: %s\n", i, link)
 	}
 }
 

@@ -11,12 +11,11 @@ import (
 
 const (
 	msg = `
-	Generating random numbers...
+	Generating %d random numbers...
 	`
 )
 
 func main() {
-	fmt.Println(msg)
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "usage: go run %s.go <startup integer>", filepath.Base(os.Args[0]))
 		return
@@ -28,15 +27,15 @@ func main() {
 	done := make(chan bool)
 
 	i, _ := strconv.Atoi(os.Args[1])
-	fmt.Printf("creating %d random numbers...\n", i)
+	fmt.Printf(msg, i)
 	go gen(0, 2*i, createInt, done)
 
 	for j := 0; j < i; j++ {
 		fmt.Printf("%d ", <-createInt)
 	}
 
-	time.Sleep(1 * time.Second)
-	fmt.Println("done...")
+	time.Sleep(250 * time.Millisecond)
+	fmt.Print("\n	done... \n")
 	done <- true
 }
 

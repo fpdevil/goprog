@@ -30,6 +30,6 @@ http://golang.org/issues/new?title=x/website:
 https://google.com
 ```
 
-Library reference avaialble [at]('https://pkg.go.dev/golang.org/x/net/html?tab=doc')
+Library reference available [here](https://pkg.go.dev/golang.org/x/net/html?tab=doc)
 
-Mozilla html `DOM` [reference](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model) will be usedulf while parsing
+Mozilla html `DOM` [reference](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model) will be useful while parsing

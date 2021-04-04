@@ -8,33 +8,40 @@ import (
 	"unicode"
 )
 
+// Part represents an struct item with identifier and name
 type Part struct {
-	Id   int
+	ID   int
 	Name string
 }
 
+// LowerCase interface has a sngle method LowerCase() to be satisfied
 type LowerCase interface {
 	LowerCase()
 }
 
+// UpperCase interface has a sngle method UpperCase() to be satisfied
 type UpperCase interface {
 	UpperCase()
 }
 
+// LowerUpperCase has 2 embedded interfaces LowerCase & UpperCase
 type LowerUpperCase interface {
 	LowerCase
 	UpperCase
 }
 
+// FixCaser interface has a single method FixCase to be satisfied
 type FixCaser interface {
 	FixCase()
 }
 
+// ChangeCaser interface has embedded LowerUpperCase and FixCaser
 type ChangeCaser interface {
 	LowerUpperCase
 	FixCaser
 }
 
+// StringPair struct has 2 fields first and second
 type StringPair struct {
 	first, second string
 }
