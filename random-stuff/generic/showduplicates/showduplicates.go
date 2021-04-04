@@ -146,7 +146,11 @@ func processFile(filename string, info fs.FileInfo, infoChan chan fileInfo, done
 // mergeResults function  takes the  fileInfo channel  and returns  a map
 // that stores duplicate files
 func mergeResults(infoChan <-chan fileInfo) map[string]*pathsInfo {
+	// pathData is a map to store the duplicate files, with the key as
+	// a string composed of file's size, a colon and file's SHA-1 and
+	// the values as *pathsInfo
 	pathData := make(map[string]*pathsInfo)
+
 	format := fmt.Sprintf("%%016X:%%%dX", sha1.Size*2)
 	for info := range infoChan {
 		key := fmt.Sprintf(format, info.size, info.sha1)
@@ -160,7 +164,7 @@ func mergeResults(infoChan <-chan fileInfo) map[string]*pathsInfo {
 	return pathData
 }
 
-//!-
+//!- mergeResults
 
 //!+ outputResults
 
@@ -173,7 +177,8 @@ func outputResults(pathData map[string]*pathsInfo) {
 	for _, key := range keys {
 		value := pathData[key]
 		if len(value.paths) > 1 {
-			fmt.Printf("%d duplicate files [%s bytes]:\n", len(value.paths), commas(value.size))
+			// fmt.Printf("%d duplicate files [%s bytes]:\n", len(value.paths), commas(value.size))
+			fmt.Printf("%d duplicate files [%s bytes]:\n", len(value.paths), delimitize(value.size, 3, ","))
 			sort.Strings(value.paths)
 			for _, name := range value.paths {
 				fmt.Printf("\t%s\n", name)
@@ -182,21 +187,26 @@ func outputResults(pathData map[string]*pathsInfo) {
 	}
 }
 
-//!-
+//!- outputResults
 
-//!+ commas
+//!+ delimitize
 
-// commas function returns a string representing the whole number grouped
-// by commas
-func commas(x int64) string {
-	value := fmt.Sprint(x)
-	for i := len(value) - 3; i > 0; i -= 3 {
-		value = value[:i] + "," + value[i:]
+// delimitize function puts appropriate delimiting characters at the specified
+// step location for the input number
+// examples:
+// delimitize(123456789, 3, ",")    = 123,456,789
+// delimitize(1231456789, 3, ",")   = 1,231,456,789
+// delimitize(123145678901, 3, "|") = 1231|4567|8901
+// delimitize(abcdefghijkl, 3, ".") = ab. cdefg. hijkl
+func delimitize(n interface{}, step int, delimiter string) string {
+	value := fmt.Sprint(n)
+	for i := len(value) - step; i > 0; i -= step {
+		value = value[:i] + delimiter + value[i:]
 	}
 	return value
 }
 
-//!-
+//!- delimitize
 
 //!+ getType
 
@@ -226,4 +236,4 @@ func getType(mode fs.FileMode) byte {
 	}
 }
 
-//!-
+//!- getType
