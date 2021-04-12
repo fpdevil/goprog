@@ -8,13 +8,13 @@ Change the `findlinks` program to traverse the `n.FirstChild` linked list using 
 
 | Constant                           | Description                                                                |
 |------------------------------------|----------------------------------------------------------------------------|
-| `Node.ELEMENT_NODE`                | An Element node like <p> or <div>.                                         |
+| `Node.ELEMENT_NODE`                | An Element node like `<p>` or `<div>`.                                     |
 | `Node.TEXT_NODE`                   | The actual Text inside an Element or Attr.                                 |
 | `Node.CDATA_SECTION_NODE`          | A CDATASection, such as <!CDATA[[ … ]]>.                                   |
 | `Node.PROCESSING_INSTRUCTION_NODE` | A ProcessingInstruction of an XML document, such as <?xml-stylesheet … ?>. |
-| `Node.COMMENT_NODE`                | A Comment node, such as <!-- … -->.                                        |
+| `Node.COMMENT_NODE`                | A Comment node, such as `<!-- … -->`.                                      |
 | `Node.DOCUMENT_NODE`               | A Document node.                                                           |
-| `Node.DOCUMENT_TYPE_NODE`          | A DocumentType node, such as <!DOCTYPE html>.                              |
+| `Node.DOCUMENT_TYPE_NODE`          | A DocumentType node, such as `<!DOCTYPE html>`.                            |
 | `Node.DOCUMENT_FRAGMENT_NODE`      | A DocumentFragment node.                                                   |
 
 - `TokenType` which will be used in tokenizing the `html` content is defined as below as per the documentation.
@@ -22,11 +22,11 @@ Change the `findlinks` program to traverse the `n.FirstChild` linked list using 
 | `ErrorToken`          | ErrorToken means that an error occurred during tokenization. |
 |-----------------------|--------------------------------------------------------------|
 | `TextToken`           | TextToken means a text node.                                 |
-| `StartTagToken`       | A StartTagToken looks like <a>.                              |
-| `EndTagToken`         | An EndTagToken looks like </a>.                              |
-| `SelfClosingTagToken` | A SelfClosingTagToken tag looks like <br/>.                  |
-| `CommentToken`        | A CommentToken looks like <!--x-->.                          |
-| `DoctypeToken`        | A DoctypeToken looks like <!DOCTYPE x>                       |
+| `StartTagToken`       | A StartTagToken looks like `<a>`.                            |
+| `EndTagToken`         | An EndTagToken looks like `</a>`.                            |
+| `SelfClosingTagToken` | A SelfClosingTagToken tag looks like `<br/>`.                |
+| `CommentToken`        | A CommentToken looks like `<!--x-->`.                        |
+| `DoctypeToken`        | A DoctypeToken looks like `<!DOCTYPE x>`                     |
 
 ## Usage
 

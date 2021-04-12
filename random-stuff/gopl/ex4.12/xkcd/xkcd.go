@@ -64,7 +64,8 @@ func FetchComic(id int) (*Comic, error) {
 
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unable to fetch comic %d status: %s", id, res.StatusCode)
+		log.Errorf("http status %d unable to fetch the coming %d", res.StatusCode, id)
+		return nil, fmt.Errorf("unable to fetch comic %v", id)
 	}
 
 	decoder := json.NewDecoder(res.Body)
@@ -100,7 +101,9 @@ func New(filepath string) *Index {
 
 // insert function inserts a comic from the map into the index
 func (index *Index) insert(comics map[int]*Comic) {
-	log.Debug("adding comic id from map to index")
+	log.WithFields(log.Fields{
+		"function": "insert",
+	}).Debugf("adding comic id from map to index")
 	for id := range comics {
 		index.Comics[id] = comics[id]
 	}
@@ -115,7 +118,7 @@ func (index *Index) Build(from, to int) {
 		c, ok := index.Comics[i]
 		if ok {
 			log.WithFields(log.Fields{
-				"function": "cerateIndex",
+				"function": "Build",
 				"comic":    c,
 			}).Debug("comic exists in the map, continuing for next")
 			continue
@@ -125,7 +128,7 @@ func (index *Index) Build(from, to int) {
 		comic, err := FetchComic(i)
 		if err != nil {
 			log.WithFields(log.Fields{
-				"function": "cerateIndex",
+				"function": "Build",
 				"comic id": i,
 			}).Error("error fetcing the comic")
 			continue
@@ -141,7 +144,7 @@ func (index *Index) Save() {
 	data, err := json.MarshalIndent(index.Comics, "", "\t")
 	if err != nil {
 		log.WithFields(log.Fields{
-			"function": "saveIndex",
+			"function": "Save",
 			"error":    err.Error(),
 		}).Error("error while marshalling the comic data")
 		return
@@ -168,7 +171,7 @@ func (index *Index) Add() {
 	data, err := json.MarshalIndent(index.Comics, "", "\t")
 	if err != nil {
 		log.WithFields(log.Fields{
-			"function": "addIndex",
+			"function": "Add",
 			"error":    err.Error(),
 		}).Error("error marshalling json data")
 		return

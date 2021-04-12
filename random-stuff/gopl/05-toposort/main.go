@@ -20,7 +20,7 @@ var prereqs = map[string][]string{
 	},
 	"data structures":       {"discrete math"},
 	"databases":             {"data structures"},
-	"discrete math":         {"intro to programming"},
+	"discrete math":         {"intro to programming", "descrete mathematics using a computer"},
 	"formal languages":      {"operating systems"},
 	"operating systems":     {"data structures", "computer organization"},
 	"programming languages": {"data structures", "computer organization"},
