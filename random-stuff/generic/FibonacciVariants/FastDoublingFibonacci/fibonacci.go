@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math/big"
 	"strconv"
 	"time"
@@ -43,6 +44,10 @@ func pow(a, n int64) int64 {
 	return res
 }
 
+
+//!+matmul
+
+// matmul function returns the mulitplied results of 2 matrices
 func matmul(m1, m2 [][]int64) [][]int64 {
 	m := [][]int64{{0, 0}, {0, 0}}
 	m[0][0] = m1[0][0]*m2[0][0] + m1[0][1]*m2[1][0]
@@ -51,6 +56,8 @@ func matmul(m1, m2 [][]int64) [][]int64 {
 	m[1][1] = m1[1][0]*m2[0][1] + m1[1][1]*m2[1][1]
 	return m
 }
+//!-matmul
+
 
 func matmulopt(m1 [][]int64) [][]int64 {
 	// here m2 is {{1, 1}, {1, 0}}
@@ -98,8 +105,9 @@ func fibonacciDoubling(n int64) (*big.Int, *big.Int) {
 	return c, d // if n is even then F(2n)
 }
 
+//!+
 func main() {
-	start := time.Now()
+	defer trace("main")()
 	var i int64
 	fmt.Println(" Calculating large Fibonacci numbers")
 	fmt.Println("-- From 0 to 100 multiples of 10 ---")
@@ -112,6 +120,18 @@ func main() {
 	for i = 100; i <= 1000; i += 100 {
 		fmt.Printf("* Fibonacci(%3v): %v\n", i, fibonacci(i))
 	}
-	elapsed := time.Since(start)
-	fmt.Printf("\n** Total time elapsed: %v**\n", elapsed.String())
 }
+//!-
+
+//!+trace
+
+// trace functin provides runtime statistics of the execution of the
+// method under which this is invoked using a defer
+func trace(msg string) func() {
+	start := time.Now()
+	log.Printf("** [enter] %s **", msg)
+	return func() {
+		log.Printf("** [exit] %s took: %v **", msg, time.Since(start).String())
+	}
+}
+//!-trace

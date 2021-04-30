@@ -33,11 +33,11 @@ func length(s string) time.Duration {
 var tracks = []*Track{
 	{"Go", "Delilah", "From the Roots Up", 2012, length("3m38s")},
 	{"Go", "Moby", "Moby", 1992, length("3m37s")},
-	{"Go Ahead", "Alicia Keys", "As I Am", 2007, length("4m36s")},
 	{"Ready 2 Go", "Martin Solveig", "Smash", 2011, length("4m24s")},
 	{"2045: Radical Man", "Prince", "Bamboozled", 2000, length("6m36s")},
 	{"The Calm", "Andy Allo", "Superconductor", 2012, length("5m20s")},
 	{"Cold Coffee & Cocaine", "Prince", "Piano & A Microphone", 1983, length("4m17s")},
+	{"Go Ahead", "Alicia Keys", "As I Am", 2007, length("4m36s")},
 	{"Feelin' the Same Way", "Norah Jones", "Come Away with Me", 2002, length("2m57s")},
 	{"Find the Answer", "Arashi", "5x20 All the Best!! 1999–2019", 2020, length("4m3s")},
 }
@@ -126,33 +126,31 @@ func (a customSort) Swap(i, j int) {
 
 func main() {
 	fmt.Println("Sort By Artist")
-	fmt.Printf("%s\n", strings.Repeat("*", 75))
+	fmt.Printf("%s\n", strings.Repeat("*", 84))
 	// first convert tracks to new type and apply sorting
 	sort.Sort(byArtist(tracks))
 	printTracks(tracks)
 
 	fmt.Println()
 	fmt.Println("Sort By Artist in Reverse")
-	fmt.Printf("%s\n", strings.Repeat("*", 75))
+	fmt.Printf("%s\n", strings.Repeat("*", 84))
 	// first convert tracks to new type and apply sorting
 	sort.Sort(sort.Reverse(byArtist(tracks)))
 	printTracks(tracks)
 
 	fmt.Println()
 	fmt.Println("Sort By Year")
-	fmt.Printf("%s\n", strings.Repeat("*", 75))
+	fmt.Printf("%s\n", strings.Repeat("*", 84))
 	// first convert tracks to new type and apply sorting
 	sort.Sort(byYear(tracks))
 	printTracks(tracks)
 
 	fmt.Println()
 	fmt.Println("Multi-tier ordering")
-	fmt.Printf("%s\n", strings.Repeat("*", 75))
+	fmt.Printf("%s\n", strings.Repeat("*", 84))
 
-	// define a multi-tier ordering function whose primary sort key
-	// is Title, whose secondary key is Year, and whose tertiary key
-	// is the running time, length
-	sort.Sort(customSort{tracks, func(x, y *Track) bool {
+	// sorter holds an anonymous function that does the ordering of tracks
+	var sorter = func(x, y *Track) bool {
 		if x.Title != y.Title {
 			return x.Title < y.Title
 		}
@@ -163,6 +161,11 @@ func main() {
 			return x.Length < y.Length
 		}
 		return false
-	}})
+	}
+
+	// define a multi-tier ordering function whose primary sort key
+	// is Title, whose secondary key is Year, and whose tertiary key
+	// is the running time, length
+	sort.Sort(customSort{tracks, sorter})
 	printTracks(tracks)
 }

@@ -30,7 +30,8 @@ func main() {
 		return
 	}
 	for _, c := range clocks {
-		conn, err := net.Dial("tcp", c.host+":"+c.port)
+		// conn, err := net.Dial("tcp", c.host+":"+c.port)
+		conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", c.host, c.port))
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "connection error: %v\n", err)
 			return

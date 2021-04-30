@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+	"time"
+)
 
 var (
 	// memo will be used as a cache with initial values of 0, 1
@@ -76,6 +80,8 @@ func main() {
 	N := 90
 	ch := make(chan int64)
 
+	defer trace("main")()
+
 	fmt.Println("Fibonacci using caching...")
 	for i := 0; i < 10; i++ {
 		fmt.Printf("Fibonacci1(%2v): %25v\n", i*10, fib1(int64(i*10)))
@@ -107,5 +113,13 @@ func main() {
 		} else {
 			fs.fib4()
 		}
+	}
+}
+
+func trace(msg string) func() {
+	start := time.Now()
+	log.Printf("enter %s", msg)
+	return func() {
+		log.Printf("exit %s (%s)", msg, time.Since(start))
 	}
 }

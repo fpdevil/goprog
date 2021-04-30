@@ -6,6 +6,7 @@ import (
 )
 
 // prereqs maps computer courses to their prerequisites.
+// this information forms an acyclic graph
 var prereqs = map[string][]string{
 	"algorithms": {"data structures"},
 	"calculus": {
@@ -20,7 +21,7 @@ var prereqs = map[string][]string{
 	},
 	"data structures":       {"discrete math"},
 	"databases":             {"data structures"},
-	"discrete math":         {"intro to programming", "descrete mathematics using a computer"},
+	"discrete math":         {"intro to programming", "discrete mathematics using a computer"},
 	"formal languages":      {"operating systems"},
 	"operating systems":     {"data structures", "computer organization"},
 	"programming languages": {"data structures", "computer organization"},
@@ -28,9 +29,10 @@ var prereqs = map[string][]string{
 
 func topoSort(m map[string][]string) []string {
 	var order []string
-	seen := make(map[string]bool)
+	seen := make(map[string]bool) // keep track of visited nodes
 	var visitAll func(items []string)
 
+	// define an anonymous function with DFS logic
 	visitAll = func(items []string) {
 		for _, item := range items {
 			if !seen[item] {

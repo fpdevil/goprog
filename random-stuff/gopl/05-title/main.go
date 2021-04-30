@@ -4,12 +4,17 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"golang.org/x/net/html"
 )
 
 func main() {
+	if len(os.Args) == 1 {
+		fmt.Fprintf(os.Stderr, "usage: go run %s <input url>\n", filepath.Base(os.Args[0]))
+		return
+	}
 	for _, arg := range os.Args[1:] {
 		if err := title(arg); err != nil {
 			fmt.Printf("title: %v\n", err)
