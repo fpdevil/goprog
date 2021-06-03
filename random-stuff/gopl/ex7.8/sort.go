@@ -126,26 +126,26 @@ func clickable(s string) {
 
 func main() {
 	fmt.Println("Multi-tiered sorting")
-	fmt.Printf("%s\n", strings.Repeat("*", 75))
+	fmt.Printf("%s\n", strings.Repeat("*", 84))
 	printTracks(tracks)
 
-	fmt.Printf("%s\n", strings.Repeat("*", 75))
+	fmt.Printf("%s\n", strings.Repeat("*", 84))
 	clickable("title")
 	printTracks(tracks)
 
-	fmt.Printf("%s\n", strings.Repeat("*", 75))
+	fmt.Printf("%s\n", strings.Repeat("*", 84))
 	clickable("artist")
 	printTracks(tracks)
 
-	fmt.Printf("%s\n", strings.Repeat("*", 75))
+	fmt.Printf("%s\n", strings.Repeat("*", 84))
 	clickable("album")
 	printTracks(tracks)
 
-	fmt.Printf("%s\n", strings.Repeat("*", 75))
+	fmt.Printf("%s\n", strings.Repeat("*", 84))
 	clickable("year")
 	printTracks(tracks)
 
-	fmt.Printf("%s\n", strings.Repeat("*", 75))
+	fmt.Printf("%s\n", strings.Repeat("*", 84))
 	clickable("length")
 	printTracks(tracks)
 }

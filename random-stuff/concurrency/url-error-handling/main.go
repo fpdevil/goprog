@@ -8,14 +8,14 @@ import (
 
 const (
 	msg = `
-	Error Handling in concurrent programs
-	Handling of errors in a sane way while making concurrent
-	requests to multiple urls.
-	========================================================
+Error Handling in concurrent programs
+Handling of errors in a sane way while making concurrent
+requests to multiple urls.
+========================================================
 `
 	n = 3 // number of errors to stop at
 
-	timeout = time.Duration(5 * time.Second) // set custom http timeout
+	timeout = time.Duration(3 * time.Second) // set custom http timeout
 )
 
 // Result struct for holding the error and response snapshots
@@ -32,9 +32,11 @@ func main() {
 	done := make(chan interface{})
 	defer close(done)
 
+	var errCount int
 	urls := []string{
 		"http://httpbin.org",
 		"https://www.rust-lang.org",
+		"http://gopl.io",
 		"http://1.2.3.4",
 		"a",
 		"b",
@@ -42,7 +44,6 @@ func main() {
 		"https://www.opera.com",
 	}
 
-	var errCount int
 	for result := range getStatus(done, urls...) {
 		if result.Error != nil {
 			errCount++
@@ -54,7 +55,7 @@ func main() {
 			continue
 		}
 
-		fmt.Printf("Response from {%s}: %#v\n", result.URL, result.Response.Status)
+		fmt.Printf("response from {%s}: %v\n", result.URL, result.Response.Status)
 	}
 }
 

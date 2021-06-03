@@ -6,7 +6,8 @@ import (
 	"os"
 	"runtime"
 	"sync"
-	"time"
+
+	"github.com/fpdevil/goprog/random-stuff/generic/helper"
 )
 
 var (
@@ -38,14 +39,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	// record the total time of execution
+	defer helper.Trace("main")()
+
 	fmt.Println("/// Memory statistics for spawning multiple goroutines ///")
 	fmt.Printf("* GO Runtime: %s\n", runtime.Version())
 
 	// limit the max. number of CPU's executing simultaneously to 1
 	runtime.GOMAXPROCS(1)
 
+	fmt.Printf("* Spawning %d goroutines...\n", *numGoRoutines)
 	wg.Add(*numGoRoutines)
-	start := time.Now()
 	before := resourceConsumed()
 	for i := *numGoRoutines; i > 0; i-- {
 		go noop()
@@ -55,15 +59,12 @@ func main() {
 	// now yield the processor to allow other goroutines to run
 	runtime.Gosched()
 	after := resourceConsumed()
-	elapsed := time.Since(start)
 
 	if counter != *numGoRoutines {
 		fmt.Fprintf(os.Stderr, "Failed to start goroutine execution")
 		os.Exit(1)
 	}
 
-	fmt.Printf("* Spawning %d goroutines...\n", *numGoRoutines)
 	fmt.Printf("* Resources per each goroutine:\n")
 	fmt.Printf("\tMemory: %.3fkb\n", float64(after-before)/float64(*numGoRoutines)/1000)
-	fmt.Printf("\tTime: %v\n", elapsed)
 }

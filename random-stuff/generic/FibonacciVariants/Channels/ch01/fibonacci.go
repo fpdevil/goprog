@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
+
+	"github.com/fpdevil/goprog/random-stuff/generic/helper"
 )
 
 func main() {
@@ -20,8 +22,10 @@ func main() {
 		return
 	}
 
+	defer helper.Trace("main")()
 	start := time.Now()
 	ch := make(chan *big.Int, 2) // buffered channel of capacity 2
+	defer close(ch)
 	ch <- big.NewInt(0)
 	ch <- big.NewInt(1)
 

@@ -30,13 +30,26 @@ func (db database) price(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "%s\n", price)
 }
 
+// ServeHTTP method serves all the http requests coming in
+func (db database) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	switch req.URL.Path {
+	case "/list":
+		db.list(w, req)
+	case "/price":
+		db.price(w, req)
+	default:
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "no such page: %s\n", req.URL)
+	}
+}
+
 func main() {
 	db := database{"shoes": 50, "socks": 5, "chocolates": 99, "milk": 46}
-	// mux := http.NewServeMux()
-	// mux.Handle("/list", http.HandlerFunc(db.list))
-	// mux.Handle("/price", http.HandlerFunc(db.price))
-	// log.Fatal(http.ListenAndServe("localhost:8080", mux))
-	http.HandleFunc("/list", db.list)
-	http.HandleFunc("/price", db.price)
-	log.Fatal(http.ListenAndServe("localhost:8080", nil))
+	mux := http.NewServeMux()
+	mux.Handle("/list", http.HandlerFunc(db.list))
+	mux.Handle("/price", http.HandlerFunc(db.price))
+	log.Fatal(http.ListenAndServe("localhost:8080", mux))
+	// http.HandleFunc("/list", db.list)
+	// http.HandleFunc("/price", db.price)
+	// log.Fatal(http.ListenAndServe("localhost:8080", nil))
 }

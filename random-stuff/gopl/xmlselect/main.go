@@ -1,6 +1,6 @@
+// Package xmlselect is for decoding the XML. It prints the
+// text of selected elements of an XML documet.
 package main
-
-// Token based XML Decoding
 
 import (
 	"bytes"
@@ -10,49 +10,55 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
+//!+
 func main() {
 	args := os.Args[1:]
-	if len(args) < 2 {
-		fmt.Fprintf(os.Stderr, "usage <prog> <url> [opt1, opt2...]")
+	if len(args) == 0 {
+		fmt.Fprintf(os.Stderr, "usage: go run %s [<url1> <url2>...]\n", filepath.Base(os.Args[0]))
 		return
 	}
 
-	// dec := xml.NewDecoder(os.Stdin)
-	body, err := fetch(args[0])
+	sb, err := fetch(args[0])
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %s", err)
+		fmt.Fprintf(os.Stderr, "error from fetch: %s", err.Error())
 		return
 	}
 
-	dec := xml.NewDecoder(bytes.NewReader(body))
-	var stack []string
-
-	// tokenize the xml structure
+	in := bytes.NewReader(sb)
+	dec := xml.NewDecoder(in)
+	var stack []string // keep a stack of element names
 	for {
-		tok, err := dec.Token()
+		token, err := dec.Token()
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			fmt.Fprintf(os.Stderr, "xmlselect: %v\n", err)
+			fmt.Fprintf(os.Stderr, "xmlselect: %#v\n", err)
 			return
 		}
-		switch tok := tok.(type) {
+
+		switch token := token.(type) {
 		case xml.StartElement:
-			stack = append(stack, tok.Name.Local) // push the element
+			stack = append(stack, token.Name.Local) // push it to stack
 		case xml.EndElement:
-			stack = stack[:len(stack)-1] // pop the element
+			stack = stack[:len(stack)-1] // pop the item out of stack
 		case xml.CharData:
 			if containsAll(stack, args[1:]) {
-				fmt.Printf("%s: %s\n", strings.Join(stack, " "), tok)
+				fmt.Printf("%s: %s\n", strings.Join(stack, " "), token)
 			}
 		}
 	}
 }
 
-// containsALl reports whether x contains the elements of y, in order
+//!-
+
+//!+containsAll
+
+// containsAll function reports whether x contains the elements of
+// y, all in order or not
 func containsAll(x, y []string) bool {
 	for len(y) <= len(x) {
 		if len(y) == 0 {
@@ -66,17 +72,29 @@ func containsAll(x, y []string) bool {
 	return false
 }
 
+//!-containsAll
+
+//#+!fetch
+// fetch function will loop over a list of http url links provided
+// as argument and makes a `GET` call to each to fetch the contetnt
+// and store them into a byte slice to return the same
+
 func fetch(url string) ([]byte, error) {
-	res, err := http.Get(url)
+	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "http error %s", err)
+		fmt.Fprintf(os.Stderr, "error calling url %s: %s", url, err.Error())
 		return nil, err
 	}
-	body, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "read error %s", err)
+		fmt.Fprintf(os.Stderr, "error reading the response: %s", err.Error())
 		return nil, err
 	}
+
+	defer resp.Body.Close()
+	// aggregate all the response bytes from all url's
 	return body, nil
 }
+
+//!-fetch
