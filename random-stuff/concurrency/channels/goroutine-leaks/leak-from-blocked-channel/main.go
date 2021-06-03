@@ -28,7 +28,8 @@ func main() {
 
 	// a goroutine spawned to cancel the one in perform
 	go func() {
-		time.Sleep(1 * time.Second)
+		// cancel operation after 500 milliseconds
+		time.Sleep(500 * time.Millisecond)
 		fmt.Println("Cancelling the perform() goroutine...")
 		close(done)
 	}()
@@ -60,6 +61,7 @@ func perform(done <-chan interface{}, strings <-chan string) <-chan interface{} 
 	return terminated
 }
 
+// insert function will cause leak if a nil is passed as argument
 func insert(in string) chan string {
 	out := make(chan string)
 	go func() {

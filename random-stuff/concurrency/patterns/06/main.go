@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"sync"
 	"time"
@@ -25,7 +24,7 @@ var (
 )
 
 func main() {
-	fmt.Println(msg)
+	log.Printf("starting fanOut %v", msg)
 
 	rand.Seed(t)
 	done := make(chan bool)
@@ -78,7 +77,7 @@ func counter(in <-chan int) {
 		for range in {
 			count++
 		}
-		fmt.Printf("Counter processed %v items in %v\n", count, time.Since(start))
+		log.Printf("Counter - processed %v items in %v", count, time.Since(start))
 	}()
 }
 

@@ -9,7 +9,7 @@ import (
 // countdown for a rocket launcher
 func main() {
 	//!+abort
-	abort := make(chan struct{})
+	abort := make(chan struct{}, 1)
 	// a go routine to read a single byte from standard input
 	// and if succeeds, sends a value on a channel abort
 	go func() {

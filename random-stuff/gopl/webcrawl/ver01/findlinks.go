@@ -30,8 +30,10 @@ func main() {
 		fmt.Printf("usage: go run %s <url1> <url2>...\n", path.Base(os.Args[0]))
 		return
 	}
-	// record queue of items that need processing with each item being
-	// a list of URL's to crawl
+	// Record queue of items that need processing with each item being
+	// a list of URL's to crawl. After each call to the crawl function
+	// being processed in it's own goroutine, the results are sent back
+	// to the worklist
 	worklist := make(chan []string)
 
 	// start with the command line arguments
@@ -39,7 +41,8 @@ func main() {
 		worklist <- os.Args[1:]
 	}()
 
-	// now crawl the web concurrently
+	// crawl the web concurrently
+	// perform a Breadth First Search
 	seen := make(map[string]bool)
 	for list := range worklist {
 		for _, link := range list {
