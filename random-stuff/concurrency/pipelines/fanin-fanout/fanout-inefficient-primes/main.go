@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"runtime"
 	"sync"
@@ -25,18 +26,21 @@ We will close the pipeline after m = 10 primes are found
 
 const (
 	msg = `
-	Applying Fan-Out to the inefficient primes version
-	A Naive and an inefficient approach of generating prime numbers
-	using the pipeline patterns
-	***************************************************************
-	`
+***************************************************************
+ Applying  the  Fan-Out  pattern to  the  inefficient  primes
+ version, speeding up the  prime numbers generation using the
+ pipeline patterns.
+ generating %d primes with upper limit of %v
+***************************************************************
+`
 
 	n = 50000000 // upper limit ot cap for the prime numbers
 	m = 10       // number of primes to find
 )
 
 func main() {
-	fmt.Println(msg)
+	defer trace("main")()
+	fmt.Printf(msg, m, n)
 
 	// random seed generation
 	// t := time.Now().UTC().UnixNano()
@@ -51,13 +55,11 @@ func main() {
 	done := make(chan interface{})
 	defer close(done)
 
-	// capture start time for benchmarking
-	start := time.Now()
-
 	// generate a random stream of numbers and converted to integer
 	randFuns := repeatFn(done, rand)
 	randIntStream := toInt(done, randFuns)
 
+	// Fan-Out
 	// generate the primes from randomStream now
 	// primeStream := findPrimes(done, randIntStream)
 	// we will FanOut the stage in pipeline by starting or spawning
@@ -74,8 +76,6 @@ func main() {
 	for prime := range take(done, fanIn(done, finders...), m) {
 		fmt.Printf("\t%d\n", prime)
 	}
-
-	fmt.Printf("Total time taken: %v\n", time.Since(start))
 }
 
 // repeatFn function is a stage which will run the given function
@@ -200,4 +200,12 @@ func fanIn(done <-chan interface{}, channels ...<-chan interface{}) <-chan inter
 	}()
 
 	return multiplexedStream
+}
+
+func trace(msg string) func() {
+	start := time.Now()
+	log.Printf("* [enter] %s *", msg)
+	return func() {
+		log.Printf("* [exit] time spent in %s: %s *", msg, time.Since(start))
+	}
 }

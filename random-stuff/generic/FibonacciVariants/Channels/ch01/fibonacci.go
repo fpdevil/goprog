@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"time"
 
 	"github.com/fpdevil/goprog/random-stuff/generic/helper"
 )
@@ -23,7 +22,7 @@ func main() {
 	}
 
 	defer helper.Trace("main")()
-	start := time.Now()
+	// start := time.Now()
 	ch := make(chan *big.Int, 2) // buffered channel of capacity 2
 	defer close(ch)
 	ch <- big.NewInt(0)
@@ -36,6 +35,6 @@ func main() {
 		ch <- big.NewInt(0).Add(n, <-ch) // add next value in pipeline to previous
 		ch <- n
 	}
-	fmt.Println()
-	fmt.Printf("Total time elapsed: %v\n", time.Since(start))
+	// fmt.Println()
+	// fmt.Printf("Total time elapsed: %v\n", time.Since(start))
 }

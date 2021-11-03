@@ -44,7 +44,6 @@ func pow(a, n int64) int64 {
 	return res
 }
 
-
 //!+matmul
 
 // matmul function returns the mulitplied results of 2 matrices
@@ -56,8 +55,8 @@ func matmul(m1, m2 [][]int64) [][]int64 {
 	m[1][1] = m1[1][0]*m2[0][1] + m1[1][1]*m2[1][1]
 	return m
 }
-//!-matmul
 
+//!-matmul
 
 func matmulopt(m1 [][]int64) [][]int64 {
 	// here m2 is {{1, 1}, {1, 0}}
@@ -120,7 +119,18 @@ func main() {
 	for i = 100; i <= 1000; i += 100 {
 		fmt.Printf("* Fibonacci(%3v): %v\n", i, fibonacci(i))
 	}
+
+	fmt.Println()
+	fmt.Println("---------------------------------------------")
+	fmt.Println("* The 3,184th Fibonacci number *")
+	fmt.Println("  This is an Apocalyptic number having 666 Digits")
+	fmt.Println()
+	fmt.Printf("%v\n", fibonacci(3184))
+	fmt.Println()
+	fmt.Println("---------------------------------------------")
+	fmt.Println()
 }
+
 //!-
 
 //!+trace
@@ -134,4 +144,5 @@ func trace(msg string) func() {
 		log.Printf("** [exit] %s took: %v **", msg, time.Since(start).String())
 	}
 }
+
 //!-trace

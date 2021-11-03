@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"time"
 )
@@ -20,17 +21,20 @@ We will close the pipeline after m = 10 primes are found
 
 const (
 	msg = `
-	A Naive and an inefficient approach of generating prime numbers
-	using the pipeline patterns
-	***************************************************************
-	`
+***************************************************************
+A Naive and an inefficient approach of generating prime numbers
+using the pipeline patterns.
+number of primes: %v with upper limit %v
+***************************************************************
+`
 
 	n = 50000000 // upper limit ot cap for the prime numbers
 	m = 10       // number of primes to find
 )
 
 func main() {
-	fmt.Println(msg)
+	defer trace("main")()
+	fmt.Printf(msg, m, n)
 
 	// random seed generation
 	// t := time.Now().UTC().UnixNano()
@@ -45,9 +49,6 @@ func main() {
 	done := make(chan interface{})
 	defer close(done)
 
-	// capture start time for benchmarking
-	start := time.Now()
-
 	// generate a random stream of numbers and converted to integer
 	randFuns := repeatFn(done, rand)
 	randIntStream := toInt(done, randFuns)
@@ -60,8 +61,6 @@ func main() {
 	for prime := range take(done, primeStream, m) {
 		fmt.Printf("\t%d\n", prime)
 	}
-
-	fmt.Printf("Total time taken: %v\n", time.Since(start))
 }
 
 // repeatFn function is a stage which will run the given function
@@ -133,8 +132,11 @@ func findPrimes(done <-chan interface{}, intStream <-chan int) <-chan interface{
 			prime := true
 
 			integer--
+			// divide the integer with all values between 2 and the value
+			// less than the number itself
 			for divisor := integer - 1; divisor > 1; divisor-- {
 				if integer%divisor == 0 {
+					// if divisible not a prime
 					prime = false
 					break
 				}
@@ -150,4 +152,15 @@ func findPrimes(done <-chan interface{}, intStream <-chan int) <-chan interface{
 		}
 	}()
 	return primeStream
+}
+
+// Trace function provides the time spent the method or function under
+// which the function is called with the parameter as function name
+// call using defer trace("name"){}
+func trace(msg string) func() {
+	start := time.Now()
+	log.Printf("* [enter] %s *", msg)
+	return func() {
+		log.Printf("* [exit] %s took %s *", msg, time.Since(start).String())
+	}
 }
